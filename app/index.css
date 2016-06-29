@@ -1,0 +1,42 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.container .status {
+  flex: 1;
+  background-color: #e9e9e9;
+}
+.container .scene {
+  position: relative;
+  height: 270px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+.container .scene .scroll {
+  position: absolute;
+  height: 100%;
+  /*background-image: -webkit-linear-gradient(left, pink, black 50%, black 55%, pink);*/
+  background: url('images/scroll.jpg') repeat-x left center;
+}
+.container .scene .rocket {
+  position: absolute;
+  left: 16px;
+  width: 64px;
+  height: 25%;
+  background-image: url('images/rocket.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;
+  transition: top 100ms;
+}
+.container .control {
+  height: 64px;
+  background-color: #e9e9e9;
+}
