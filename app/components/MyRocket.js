@@ -55,7 +55,8 @@ var MyRocket = (function () {
     }
 
     var rocketNode = document.createElement('div');
-        rocketNode.attributes.id = 'my-rocket';
+        // rocketNode.attributes.id = 'my-rocket'; -> 不起作用
+        rocketNode.setAttribute('id', 'my-rocket');
         rocketNode.className = "rocket";
         rocketNode.style.transform = "translateX(" + (0 - left) + "px)";
         rocketNode.style.top = top + "%";
