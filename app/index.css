@@ -1,4 +1,5 @@
 * {
+  box-sizing: border-box;
   padding: 0;
   margin: 0;
   font-family: '微软雅黑';
@@ -43,6 +44,19 @@
       background-size: 80%;
       transition: top 100ms;
       */
+}
+.container .scene .tracks {
+  height: 183px;
+  padding: 1px 0 2px;
+  margin-top: 44px;
+  background-color: #fff;
+}
+.container .scene .tracks .track {
+  height: 60px;
+  border-top: 1px dashed red;
+}
+.container .scene .tracks .track:first-child {
+  border-color: #fff;
 }
 .container .control {
   display: flex;
