@@ -27,30 +27,44 @@
 }
 .container .scene .rocket {
   position: absolute;
-  left: 16px;
-  width: 64px;
-  height: 25%;
-  background-image: url('images/rocket.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 80%;
-  transition: top 100ms;
+  top: 45px;
+  left: 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  box-shadow: -4px 0px 2px 1px #888888;
+  background-color: #70CCF0;
+  /*
+      height: 25%;
+      background-image: url('./images/rocket.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 80%;
+      transition: top 100ms;
+      */
 }
 .container .control {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
   height: 64px;
+  padding: 0 32px;
   background-color: #e9e9e9;
-}
-.container .control #direction-ctrl .orientation {
-  width: 100px;
-  height: 24px;
-}
-.container .control #direction-ctrl .orientation.up {
-  background-color: green;
-}
-.container .control #direction-ctrl .orientation.down {
-  background-color: yellow;
+  /*
+    #direction-ctrl {
+      .orientation {
+        width: 100px;
+        height: 24px;
+
+        &.up {
+          background-color: green;
+        }
+
+        &.down {
+          background-color: yellow;
+        }
+      }
+    }
+    */
 }
 .container .control #speed-ctrl {
   display: flex;

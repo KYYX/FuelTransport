@@ -11,10 +11,18 @@
     } else { /* 速度正常增减 */}
   };
 
-  var setMyRollPosition = function (x, y) {
-    myRollNode.style.transform = "translate(" + x + "px, " + y + "px)";
-    // myRollNode.style.transform = "translateX(" + x + "px)";
-    // myRollNode.style.top = y + "px";
+  var getMyRollPosition = function () {
+    var match = myRollNode.style.transform.match(/translate\((\d+(\.\d+)?)px, (\d+(\.\d+)?)px\)/);
+    var x = Number(match[1]);
+    var y = Number(match[3]);
+
+    return {x:x, y:y};
+  };
+
+  var setMyRollPositionX = function (x) {
+    var pos = getMyRollPosition();
+
+    myRollNode.style.transform = "translate(" + x + "px, " + pos.y + "px)";
   };
 
   var screenWidth = window.innerWidth;
@@ -22,7 +30,9 @@
 
   var scrollNode = document.querySelector('.scroll');
   var myRollNode = document.querySelector('#my-rocket');
+  var ballNode   = document.querySelector(".ball");
 
+  //设置地图长度
   scrollNode.style.width = distance + "px";
   /*
   var myRocket = new MyRocket({
@@ -62,24 +72,16 @@
 
     if (Math.abs(scrollNodeLeft) < distance - screenWidth ) {
       scrollNode.style.transform = "translateX(" + scrollNodeLeft + "px)";
-    } else { /* 地图静止 */}
+    } else { /* 地图达到最大距离，停止滚动 */}
 
     translateX = 0 - scrollNodeLeft;
 
-    if (orientation === "down") {
-      translateY = top += 1;
-    } else if (orientation === "up") {
-      translateY = top -= 1;
-    }
-
-    setMyRollPosition(translateX, translateY);
+    setMyRollPositionX(Math.abs(scrollNodeLeft));
   }, 1000 / 60);
 
   var deepOfaccelerator = 50; //油门深度
   var speedCtrlSwitch = "off";
   var currentPos = 0; //油门的位置的页面定位
-
-  var ballNode = document.querySelector(".ball");
 
   ballNode.addEventListener('touchstart', function (event) {
     speedCtrlSwitch = "on";
@@ -113,6 +115,42 @@
     }
   });
 
+
+  var moveCtrlSwitch = "off"; //上下移动开关
+  var moveSwitchPos;
+
+  scrollNode.addEventListener('touchstart', function (event) {
+    moveCtrlSwitch = "on";
+
+    moveSwitchPos = event.changedTouches[0].clientY;
+
+    event.stopPropagation();
+  });
+
+  scrollNode.addEventListener('touchend', function (event) {
+    moveCtrlSwitch = "off";
+  });
+
+  scrollNode.addEventListener('touchmove', function (event) {
+    if (moveCtrlSwitch === "on") {
+      var clientY = event.changedTouches[0].clientY;
+      var moveDistance = clientY - moveSwitchPos;
+
+      var pos = getMyRollPosition();
+      var x = pos.x;
+      var y = pos.y + moveDistance;
+
+      if (y < 0 || y > 180 - 45) {
+        y = pos.y;
+      }
+
+      myRollNode.style.transform = "translate(" + x + "px, " + y + "px)";
+
+      moveSwitchPos = clientY;
+    }
+  });
+
+/*
   var top = 0;
   var orientation = "";
   var upNode = document.querySelector('.orientation.up');
@@ -128,10 +166,13 @@
   var downNode = document.querySelector('.orientation.down');
 
   downNode.addEventListener('touchstart', function (event) {
-    orientation = "down";
+    setTimeout(function () {
+      orientation = "down";
+    }, 1000 / 60);
   });
 
   downNode.addEventListener('touchend', function (event) {
     orientation = "";
   });
+*/
 })();
