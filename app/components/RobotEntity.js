@@ -1,3 +1,5 @@
+import Ball from './BallEntity';
+
 var createRollNode = function (color) {
   var wrap  = document.createElement('div');
   var inner = document.createElement('div');
