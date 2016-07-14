@@ -3,27 +3,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fuel Transport</title>
+    <title>O'Robot</title>
     <link rel="stylesheet" type="text/css" href="./index.css">
     <script src="./libs/zepto.min.js"></script>
     <script src="./libs/zepto.touch.js"></script>
   </head>
   <body>
     <div class="container">
+
       <div class="status"></div>
+
       <div class="scene">
-          <!-- <div id="cover"></div> -->
           <div class="scroll" id="track">
             <div class="tracks"></div>
           </div>
       </div>
+
       <div class="control">
-        <!--
-        <div id="direction-ctrl">
-          <div class="orientation up"></div>
-          <div class="orientation down"></div>
-        </div>
-      -->
         <div id="speed-ctrl">
           <span>减速</span>
           <div class="axis">
@@ -32,11 +28,9 @@
           <span>加速</span>
         </div>
       </div>
+
     </div>
 
-    <script src="./components/TrackEntity.js"></script>
-    <script src="./components/AcceleratorEntity.js"></script>
-    <script src="./components/RollEntity.js"></script>
-    <script src="./index.js"></script>
+    <script src="./build.js"></script>
   </body>
 </html>
