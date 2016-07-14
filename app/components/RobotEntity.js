@@ -16,6 +16,8 @@ var setNodePosition = function (node, x, y) {
 }
 
 function RobotEntity (config) {
+  this.status = "normal";
+
   this.maxSpeed    = config.maxSpeed;    //最大速度 px/s
   this.maxSpeedUp  = config.maxSpeedUp;  //最大加速度
   this.speedCut    = config.speedCut;    //匀减速
@@ -59,6 +61,10 @@ RobotEntity.prototype.setTranslateY = function (offset) {
   }
 
   setNodePosition(this.node, this.translateX, this.translateY);
+};
+
+RobotEntity.prototype.shutdown = function () {
+  this.status = "shutdown";
 };
 
 RobotEntity.prototype.update = function () {

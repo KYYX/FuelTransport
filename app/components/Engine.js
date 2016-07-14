@@ -51,30 +51,57 @@ Accelerator.init(MyRoll);
 
 var timeout; //监控worker;
 
+//碰撞检测
+var collisionDetection = function () {
+  for (var i=0; i<roberts.length - 1; i++) {
+    var robertsI = roberts[i];
+    for (var j=i+1; j<roberts.length; j++) {
+      var robertsJ = roberts[j];
+
+      if (robertsI.translateY === robertsJ.translateY &&
+          Math.abs(robertsI.translateX - robertsJ.translateX) < 30) {
+        robertsI.shutdown();
+        robertsJ.shutdown();
+      }
+    }
+  }
+};
+
 var _update = function () {
   clearTimeout(timeout);
 
   roberts.forEach(function (robot) {
-    robot.update();
+    robot.status === "normal" && robot.update();
   });
   // MyRoll.update();
   Track.update(MyRoll.translateX, MyRoll.currentSpeed);
 
-  if (MyRoll.translateX >= distance) {
+  collisionDetection();
+
+  if (MyRoll.status === "normal") {
+    if (MyRoll.translateX >= distance) {
+      clearTimeout(timeout);
+      var endTime = +new Date();
+      console.log('Congratulation!!!');
+      console.log('Use time: ' + (endTime - startTime) / 1000 + 's');
+
+      MainLoop.terminate();
+    } else {
+      timeout = setTimeout(function () {
+        var endTime = +new Date();
+        console.warn('Worker terminate!!!');
+        console.warn('Case time: ' + (endTime - startTime) / 1000 + 's');
+      }, 1000);
+
+      !paused && MainLoop.postMessage(200);
+    }
+  } else {
     clearTimeout(timeout);
     var endTime = +new Date();
-    console.log('Congratulation!!!');
+    console.log('Traffic accident!!!');
     console.log('Use time: ' + (endTime - startTime) / 1000 + 's');
 
     MainLoop.terminate();
-  } else {
-    timeout = setTimeout(function () {
-      var endTime = +new Date();
-      console.warn('Worker terminate!!!');
-      console.warn('Case time: ' + (endTime - startTime) / 1000 + 's');
-    }, 1000);
-
-    !paused && MainLoop.postMessage(200);
   }
 };
 
