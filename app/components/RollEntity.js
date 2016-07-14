@@ -1,17 +1,20 @@
 var RollEntity = (function () {
   var sceneNode = document.querySelector('.scroll');
 
-  var createRollNode = function (x, y) {
-    var node = document.createElement('div');
+  var createRollNode = function () {
+    var wrap  = document.createElement('div');
+    var inner = document.createElement('div');
 
-    node.className = "rocket";
-    node.style.transform = "translate(" + x + "px, " + y + "px)";
+     wrap.className = "rocket-wrap";
+    inner.className = "rocket";
 
-    return node;
+    wrap.appendChild(inner);
+
+    return wrap;
   };
 
   var setNodePosition = function (node, x, y) {
-    node.style.transform = "translate(" + x + "px, " + y + "px)";
+    node.style.transform = "translate(" + x + "px, " + y * 100 + "%)";
   }
 
   function _RollEntity (config) {
@@ -26,9 +29,13 @@ var RollEntity = (function () {
     this.translateX = config.x;
     this.translateY = config.y;
 
-    this.node = createRollNode(this.translateX, this.translateY);
+    this.tracks = config.tracks;
 
-    sceneNode.appendChild(this.node);
+    var node = this.node = createRollNode();
+
+    setNodePosition(node, this.translateX, this.translateY)
+
+    sceneNode.appendChild(node);
   }
 
   _RollEntity.prototype.setDeepOfAccelerator = function (deepOfAccelerator) {
@@ -47,8 +54,8 @@ var RollEntity = (function () {
 
     if (this.translateY < 0) {
       this.translateY = 0;
-    } else if (this.translateY > 180 - 32) {
-      this.translateY = 148;
+    } else if (this.translateY > this.tracks - 1) {
+      this.translateY = this.tracks - 1;
     } else {
 
     }
@@ -56,13 +63,13 @@ var RollEntity = (function () {
     setNodePosition(this.node, this.translateX, this.translateY);
   };
 
-  _RollEntity.prototype.getStatus = function () {
-    return {
-      speed: this.currentSpeed,
-          x: this.translateX,
-          y: this.translateY
-    }
-  };
+  // _RollEntity.prototype.getStatus = function () {
+  //   return {
+  //     speed: this.currentSpeed,
+  //         x: this.translateX,
+  //         y: this.translateY
+  //   }
+  // };
 
   _RollEntity.prototype.update = function () {
     //加速或趟车

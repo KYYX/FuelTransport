@@ -12,12 +12,9 @@
     <div class="container">
       <div class="status"></div>
       <div class="scene">
-          <div class="scroll">
-            <div class="tracks">
-              <div class="track"></div>
-              <div class="track"></div>
-              <div class="track"></div>
-            </div>
+          <!-- <div id="cover"></div> -->
+          <div class="scroll" id="track">
+            <div class="tracks"></div>
           </div>
       </div>
       <div class="control">
@@ -30,13 +27,15 @@
         <div id="speed-ctrl">
           <span>减速</span>
           <div class="axis">
-            <div class="ball"></div>
+            <div id="accelerator" class="accelerator"></div>
           </div>
           <span>加速</span>
         </div>
       </div>
     </div>
 
+    <script src="./components/TrackEntity.js"></script>
+    <script src="./components/AcceleratorEntity.js"></script>
     <script src="./components/RollEntity.js"></script>
     <script src="./index.js"></script>
   </body>

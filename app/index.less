@@ -1,3 +1,5 @@
+@track-height: 180px;
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -23,45 +25,76 @@
     flex-direction: column;
     overflow-x: hidden;
 
+    #cover {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(100,100,100,.5);
+    }
+
     .scroll {
       position: absolute;
       height: 100%;
-      /*background-image: -webkit-linear-gradient(left, pink, black 50%, black 55%, pink);*/
       background: url('./images/scroll.jpg') repeat-x left center;
-    }
 
-    .rocket {
-      position: absolute;
-      top:    45px;
-      left:    0px;
-      width:  32px;
-      height: 32px;
-      border-radius: 16px;
-      box-shadow: -4px 0px 2px 1px #888888;
-      background-color: #70CCF0;
-      /*
-      height: 25%;
-      background-image: url('./images/rocket.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 80%;
-      transition: top 100ms;
-      */
-    }
+      .rocket-wrap {
+        position: absolute;
+        top:  45px;
+        left: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 1px;
 
-    .tracks {
-      height: 183px;
-      padding: 1px 0 2px;
-      margin-top: 44px;
-      background-color: #fff;
-
-      .track {
-        height: 60px;
-        border-top: 1px dashed red;
-
-        &:first-child {
-          border-color: #fff;
+        .rocket {
+          box-shadow: -4px 0px 2px 1px #888888;
+          background-color: #70CCF0;
         }
+      }
+
+      .generate-rocket(6);
+
+      .generate-rocket(@n, @i: 3) when (@i =< @n) {
+        &.track-@{i} > .rocket-wrap {
+          width:  @track-height / @i * 2 / 3;
+          height: @track-height / @i;
+
+          .rocket {
+            width:  @track-height / @i * 2 / 3;
+            height: @track-height / @i * 2 / 3;
+            border-radius: @track-height / @i / 3;
+          }
+        }
+
+        .generate-rocket(@n, (@i + 1));
+      }
+
+      .tracks {
+        height: 183px;
+        padding: 1px 0 2px;
+        margin-top: 44px;
+        background-color: #fff;
+
+        .track {
+          border-top: 1px dashed red;
+
+          &:first-child {
+            border-color: #fff;
+          }
+        }
+      }
+
+      .generate-tracks(6);
+
+      .generate-tracks(@n, @i: 3) when (@i =< @n) {
+        &.track-@{i} .track {
+          height: @track-height / @i;
+        }
+
+        .generate-tracks(@n, (@i + 1));
       }
     }
   }
@@ -90,7 +123,7 @@
         margin: 0 16px;
         background-color: red;
 
-        .ball {
+        .accelerator {
           position: absolute;
           top: 1px;
           left: 100px;
