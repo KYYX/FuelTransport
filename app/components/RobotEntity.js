@@ -1,22 +1,5 @@
 import Ball from './BallEntity';
 
-var createRollNode = function (color) {
-  var wrap  = document.createElement('div');
-  var inner = document.createElement('div');
-
-   wrap.className = "rocket-wrap";
-  inner.className = "rocket";
-  inner.style.backgroundColor = color;
-
-  wrap.appendChild(inner);
-
-  return wrap;
-};
-
-var setNodePosition = function (node, x, y) {
-  node.style.transform = "translate(" + x + "px, " + y * 100 + "%)";
-}
-
 function RobotEntity (config) {
   this.status = "normal";
 
@@ -31,26 +14,43 @@ function RobotEntity (config) {
   this.translateX = config.x;
   this.translateY = config.y;
 
-  this.tracks = config.tracks;
+  var tracks = this.tracks = config.tracks; //车道总数
 
-  var node = this.node = createRollNode(config.color);
+  this.trackHeight = 60;
 
-  setNodePosition(node, this.translateX, this.translateY)
+  if (tracks === 4) {
+    this.trackHeight = 45;
+  } else if (tracks === 5) {
+    this.trackHeight = 36;
+  } else if (tracks === 6) {
+    this.trackHeight = 30;
+  } else {
+    this.trackHeight = 60;
+  }
 
-  document.querySelector('.scroll').appendChild(node);
+  this.Ball = new Ball(config.color, config.x, this.calcOffsetY());
 }
 
-RobotEntity.prototype.setDeepOfAccelerator = function (deepOfAccelerator) {
-    if (deepOfAccelerator > 0) {
-      this.controlledSpeed = this.maxSpeed * (deepOfAccelerator / 100);
-      this.currentSpeedUp  = this.maxSpeedUp * (deepOfAccelerator / 100);
-    } else if (deepOfAccelerator < 0) {
-      this.currentSpeedUp = this.maxSpeedCut * (deepOfAccelerator / 100);
-    } else {
-      this.currentSpeedUp = 0 - this.speedCut;
-    }
+/* 计算Y轴偏移量 */
+RobotEntity.prototype.calcOffsetY = function () {
+  return 45 + this.translateY * this.trackHeight;
 };
 
+/* 设置加速度和当前最大速度 */
+RobotEntity.prototype.setDeepOfAccelerator = function (deepOfAccelerator) {
+  var _deepOfAccelerator = deepOfAccelerator / 100;
+
+  if (_deepOfAccelerator > 0) {
+    this.controlledSpeed = this.maxSpeed   * _deepOfAccelerator;
+    this.currentSpeedUp  = this.maxSpeedUp * _deepOfAccelerator;
+  } else if (_deepOfAccelerator < 0) {
+    this.currentSpeedUp = this.maxSpeedCut * _deepOfAccelerator;
+  } else {
+    this.currentSpeedUp = 0 - this.speedCut;
+  }
+};
+
+/* 变道 */
 RobotEntity.prototype.setTranslateY = function (offset) {
   this.translateY += offset;
 
@@ -58,17 +58,25 @@ RobotEntity.prototype.setTranslateY = function (offset) {
     this.translateY = 0;
   } else if (this.translateY > this.tracks - 1) {
     this.translateY = this.tracks - 1;
-  } else {
+  } else { /* 正常变道 */ }
 
-  }
-
-  setNodePosition(this.node, this.translateX, this.translateY);
+  this.Ball.setOffsetY(this.calcOffsetY());
 };
 
-RobotEntity.prototype.shutdown = function () {
-  this.status = "shutdown";
+RobotEntity.prototype.getOffsetX = function () {
+  return this.translateX;
+}
+
+RobotEntity.prototype.getOffsetY = function () {
+  return this.translateY;
+}
+
+/* 熄火 */
+RobotEntity.prototype.crash = function () {
+  this.status = "crash";
 };
 
+/* 前进 */
 RobotEntity.prototype.update = function () {
   //加速或趟车
   if (this.currentSpeedUp > 0) {
@@ -91,7 +99,7 @@ RobotEntity.prototype.update = function () {
 
   this.translateX += this.currentSpeed / 60;
 
-  setNodePosition(this.node, this.translateX, this.translateY);
+  this.Ball.setOffsetX(this.translateX);
 };
 
 module.exports = RobotEntity;
