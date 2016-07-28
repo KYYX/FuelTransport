@@ -39,5 +39,7 @@ jspm_packages
 # Less
 .less
 
+.bat
+
 build.js
 build.js.map

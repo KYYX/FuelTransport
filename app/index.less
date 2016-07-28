@@ -1,18 +1,94 @@
 @track-height: 180px;
 
+@c500: #21bd73;
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin:  0;
+  font-size: 14px;
   font-family: '微软雅黑';
 }
 
+.progress {
+  background-color: #fff;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+
+  & > div {
+    height: 4px;
+    background-color: @c500;
+  }
+}
+
 .container {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page {
+  position: absolute;
+  top:  0;
+  left: 0;
+  display: none;
   width:  100vw;
   height: 100vh;
+  background-color: lightblue;
 
+  // &.expand {
+  //   z-index: 1;
+  // }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    width:  100vw;
+    height: 100vh;
+    opacity: 0;
+    transition: opacity 200ms;
+    // transition-property: transform, opacity;
+    // transition-duration: 800ms;
+    // transition-timing-function: linear;
+    // transform: scale(0);
+    // transform-origin: center center;
+    background-color: #fff;
+  }
+
+  &.ready > div {
+      opacity: 1;
+  }
+
+  // &.expand > div {
+  //   transform: scale(1);
+  //   opacity: 1;
+  // }
+
+  &.show {
+    display: block;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top:  0;
+    z-index: 999;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background-color: lightblue;
+  }
+
+  &.ready::after {
+    content: '';
+    display: none;
+  }
+}
+
+#game {
   .status {
     flex: 1;
     background-color: #e9e9e9;
@@ -100,9 +176,10 @@
   }
 
   .control {
+    flex: 1;
     display: flex;
     justify-content: flex-end;
-    height: 64px;
+    // height: 64px;
     padding: 0 32px;
     background-color: #e9e9e9;
 
@@ -137,3 +214,5 @@
     }
   }
 }
+
+@import './styles/main.less';

@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <title>O'Robot</title>
     <link rel="stylesheet" type="text/css" href="./index.css">
     <script src="./libs/zepto.min.js"></script>
@@ -10,22 +10,104 @@
   </head>
   <body>
     <div class="container">
-
-      <div class="status"></div>
-
-      <div class="scene">
-          <div class="scroll" id="track">
-            <div class="tracks"></div>
+      <!-- 首页 -->
+      <div id="main" class="page show ready">
+        <div>
+          <div class="above">
+            <div>编号</div>
+            <div>89757</div>
+            <div>金币</div>
+            <div>100</div>
+            <div>钻石</div>
+            <div>10</div>
           </div>
+          <div class="between">
+            <div class="prototype-list">
+              <div class="prototype">
+                <span>耐久</span>
+                <div class="progress">
+                  <div style="width: 44%;"></div>
+                </div>
+                <span>1118</span>
+              </div>
+              <div class="prototype">
+                <span>极速</span>
+                <div class="progress">
+                  <div style="width: 44%;"></div>
+                </div>
+                <span>44</span>
+              </div>
+              <div class="prototype">
+                <span>加速</span>
+                <div class="progress">
+                  <div style="width: 44%;"></div>
+                </div>
+                <span>44</span>
+              </div>
+              <div class="prototype">
+                <span>减速</span>
+                <div class="progress">
+                  <div style="width: 44%;"></div>
+                </div>
+                <span>44</span>
+              </div>
+              <div class="prototype">
+                <span>防护</span>
+                <div class="progress">
+                  <div style="width: 44%;"></div>
+                </div>
+                <span>44</span>
+              </div>
+            </div>
+            <div class="package">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+          <div class="below">
+            <div>商店</div>
+            <div>车库</div>
+            <div data-location="game">出发</div>
+            <div>仓库</div>
+            <div>情报</div>
+          </div>
+        </div>
       </div>
 
-      <div class="control">
-        <div id="speed-ctrl">
-          <span>减速</span>
-          <div class="axis">
-            <div id="accelerator" class="accelerator"></div>
+      <!-- 比赛页面 -->
+      <div id="game" class="page">
+        <div>
+          <div class="status"></div>
+
+          <div class="scene">
+            <div class="scroll" id="track">
+              <div class="tracks"></div>
+            </div>
           </div>
-          <span>加速</span>
+
+          <div class="control">
+            <div id="speed-ctrl">
+              <span>减速</span>
+              <div class="axis">
+                <div id="accelerator" class="accelerator"></div>
+              </div>
+              <span>加速</span>
+            </div>
+          </div>
         </div>
       </div>
 

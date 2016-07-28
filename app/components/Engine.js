@@ -22,17 +22,7 @@ var startTime = -1;
 var robots     = [];
 var tracks     = 4; //赛道数量
 var distance   = 3000; //赛道长度
-var robotWidth = 40; //球体宽度
-
-if (tracks === 4) {
-  robotWidth = 30;
-} else if (tracks === 5) {
-  robotWidth = 24;
-} else if (tracks === 6) {
-  robotWidth = 20;
-} else {
-  robotWidth = 40;
-}
+var robotWidth = 120 / tracks; //球体宽度
 
 //碰撞检测
 var collisionDetection = function () {
@@ -51,49 +41,47 @@ var collisionDetection = function () {
 };
 
 //周围检测
-var circumstanceDetection = (function (robots) {
-  return function (centralRobot, front, back) {
-    var fd = {
-      top:    true,
-      right:  false,
-      bottom: true,
-      left:   false,
-    }
+var circumstanceDetection = function (centralRobot, front, back) {
+  var fd = {
+    top:    true,
+    right:  false,
+    bottom: true,
+    left:   false,
+  }
 
-    for (var i=0; i<robots.length; i++) {
-      var robot = robots[i];
+  for (var i=0; i<robots.length; i++) {
+    var robot = robots[i];
 
-      if (robot === centralRobot) {
-        continue;
+    if (robot === centralRobot) {
+      continue;
+    } else {
+      //上下是否可变道
+      var offsetY = centralRobot.getOffsetY() - robot.getOffsetY();
+      //前后距离预警
+      var offsetX = centralRobot.getOffsetX() - robot.getOffsetX();
+
+      if (offsetY === 0) {
+        if (offsetX < 0 && Math.abs(offsetX) < front) {
+          fd.right = true;
+        } else if (offsetX > 0 && Math.abs(offsetX) < back) {
+          fd.left = true;
+        } else { /* 不在前后警戒距离中 */ }
+      } else if (Math.abs(offsetY) === 1) {
+        if (Math.abs(offsetX) < robotWidth) {
+          if (offsetY === -1) {
+            fd.bottom = false;
+          } else {
+            fd.top = false;
+          }
+        } else { /* 距离安全可变道 */ }
       } else {
-        //上下是否可变道
-        var offsetY = centralRobot.getOffsetY() - robot.getOffsetY();
-        //前后距离预警
-        var offsetX = centralRobot.getOffsetX() - robot.getOffsetX();
-
-        if (offsetY === 0) {
-          if (offsetX < 0 && Math.abs(offsetX) < front) {
-            fd.right = true;
-          } else if (offsetX > 0 && Math.abs(offsetX) < back) {
-            fd.left = true;
-          } else { /* 不在前后警戒距离中 */ }
-        } else if (Math.abs(offsetY) === 1) {
-          if (Math.abs(offsetX) < robotWidth) {
-            if (offsetY === -1) {
-              fd.bottom = false;
-            } else {
-              fd.top = false;
-            }
-          } else { /* 距离安全可变道 */ }
-        } else {
-          continue;
-        }
+        continue;
       }
     }
+  }
 
-    return fd;
-  };
-})(robots);
+  return fd;
+};
 
 var _update = function () {
   clearTimeout(timeout);

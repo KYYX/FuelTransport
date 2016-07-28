@@ -1,3 +1,5 @@
-import Engine from './components/Engine';
+import MainPage from './pages/main';
 
-window.onload = Engine.start();
+window.onload = function () {
+    MainPage.init();
+}
