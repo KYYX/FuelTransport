@@ -1,7 +1,9 @@
 module.exports = (function () {
   var MyRobot;
   var acceleratorNode;
-  var deepOfAccelerator = 100; //油门深度
+  var deepOfAccelerator = 50; //油门深度
+  var maxDeep  = deepOfAccelerator * 2;
+  var zeroDeep = maxDeep / 2;
   var speedCtrlSwitch = "off";
   var currentPos = 0; //油门的位置的页面定位
 
@@ -18,11 +20,12 @@ module.exports = (function () {
     if (speedCtrlSwitch === "on") {
       var clientX = event.changedTouches[0].clientX;
       var deep = clientX - currentPos;
+      var power;
 
       deepOfAccelerator += deep;
 
-      if (deepOfAccelerator > 200) {
-        deepOfAccelerator = 200;
+      if (deepOfAccelerator > maxDeep) {
+        deepOfAccelerator = maxDeep;
       } else if (deepOfAccelerator < 0) {
         deepOfAccelerator = 0;
       } else {
@@ -33,7 +36,17 @@ module.exports = (function () {
 
       currentPos = clientX;
 
-      MyRobot.setDeepOfAccelerator(deepOfAccelerator - 100);
+      var _deepOfAccelerator = (deepOfAccelerator - zeroDeep) / zeroDeep;
+
+      if (_deepOfAccelerator > 0) {
+          power = MyRobot.config.power * _deepOfAccelerator;
+      } else if (_deepOfAccelerator < 0) {
+          power = MyRobot.config.braking * _deepOfAccelerator;
+      } else {
+          power = 0;
+      }
+
+      MyRobot.setPower(power);
     }
   };
 

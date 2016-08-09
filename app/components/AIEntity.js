@@ -1,9 +1,11 @@
 import Robot from './RobotEntity.js';
 
 function AI (config) {
+  var person = config.person;
+
   this.status = "normal";
-  this.deepOfAccelerator = 0; //油门深度
-  this.tick = 0;
+  this.tick   = 0;
+  this.config = config;
 
   this.circumstanceDetection = (function (self) {
     return function (front, back) {
@@ -11,65 +13,73 @@ function AI (config) {
     }
   })(this);
 
-  this.distance = config.distance;
+  this.MaxPower = config.robot.power * person.MaxPowerRate;
+  this.robot    = new Robot(config.robot);
 
-  this.character = config.character;
-  this.robot = new Robot(config.robot);
+  this.lastFrontDistance = -1;
 }
 
-AI.prototype.getOffsetX = function () {
-  return this.robot.getOffsetX();
-}
-
-AI.prototype.getOffsetY = function () {
-  return this.robot.getOffsetY();
-}
-
-AI.prototype.crash = function () {
-  this.status = "crash";
+AI.prototype.get = function (attr) {
+  return this.robot.get(attr);
 };
 
-AI.prototype.update = function () {
+AI.prototype.set = function (attr, value) {
+  this.robot.set(attr, value);
+};
+
+AI.prototype.getPosition = function () {
+  return this.robot.getPosition();
+};
+
+AI.prototype.update = function (friction) {
   this.tick += 1;
 
-  var fd = this.circumstanceDetection(100, 100);
+  var    robot = this.robot;
+  var robotCfg = robot.config;
+  var    armor = robotCfg.armor;
+  var  braking = robotCfg.braking;
+  var   power  = robotCfg.power;
+  var    speed = robot.get("speed");
+  var     lfd  = this.lastFrontDistance;
+  var      fd  = this.circumstanceDetection(200, 100);
 
-  // if (this.deepOfAccelerator < 80 && this.tick % 4 === 0) {
-  //   this.deepOfAccelerator += 10;
-  //
-  //   if (this.deepOfAccelerator > 100) {
-  //     this.deepOfAccelerator = 100;
-  //   }
-  // }
-  var sents = {
-    escape: ['赶紧赶紧...', '该死，怎么会在后面！', '我去！这哥们不会看上我了吧？']
-  };
+  if (typeof fd.right === "number") {
+    var _braking;
 
-  if (fd.left) {
-    if (this.status === "normal") { //进入警戒状态
-      console.log('啊~~，加速加速，有人在追我...');
-      this.status = "escape";
-      this.deepOfAccelerator = 100;
-    } else {
-      if (this.tick % 30 === 0) { //持续警戒状态
-        console.log(sents.escape[~~(Math.random() * 3)]);
-      }
+    if (lfd < 0) { //开始减速
+      _braking = Math.pow(speed, 2) / 200 * (armor + speed) + friction;
+      _braking = _braking > braking ? braking : _braking;
     }
+
+    if (fd.right < 50) {
+      _braking = _braking * 2;
+      _braking = _braking > braking ? braking : _braking;
+    }
+
+    if (lfd > fd.right) { //由于和前方车辆变远，脱离减速
+      _braking = 0;
+    }
+
+    robot.set("power", 0 - _braking);
+
+    this.lastFrontDistance = fd.right;
   } else {
-    if (this.status === "escape") { //退出警戒状态
-      console.log('呼~~，甩开了，可以安心开车了...');
-      this.status = "normal";
-      this.deepOfAccelerator = 50;
-    } else { /* 保持当前状态 */ }
-  }
+    this.lastFrontDistance = -1;
 
-  this.robot.setDeepOfAccelerator(this.deepOfAccelerator);
-  this.robot.update();
+    var _power = robot.get("power");
 
-  if (this.robot.translateX >= this.distance) {
-    this.status = "arrived";
-    console.log("tick: " + this.tick);
+    if (_power < 0) {
+      _power = this.MaxPower / (60 * 2);
+    } else {
+      _power += this.MaxPower / (60 * 2);
+    }
+
+    _power = _power > this.MaxPower ? this.MaxPower : _power;
+
+    robot.setPower(_power);
   }
+  
+  robot.update(friction);
 };
 
 module.exports = AI;

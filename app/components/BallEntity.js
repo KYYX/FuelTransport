@@ -1,9 +1,9 @@
-var createBallNode = function (color) {
+var createBallNode = function (color, size) {
   var wrap  = document.createElement('div');
   var inner = document.createElement('div');
 
    wrap.className = "rocket-wrap";
-  inner.className = "rocket";
+  inner.className = "rocket size" + size;
   inner.style.backgroundColor = color;
 
   wrap.appendChild(inner);
@@ -11,8 +11,8 @@ var createBallNode = function (color) {
   return wrap;
 };
 
-function BallEntity (color, offsetX, offsetY) {
-  var node = this.node = createBallNode(color);
+function BallEntity (color, size, offsetX, offsetY) {
+  var node = this.node = createBallNode(color, size);
 
   this.setOffsetX(offsetX);
   this.setOffsetY(offsetY);

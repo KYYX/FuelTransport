@@ -1,20 +1,3 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <title>!Rocket</title>
-    <link rel="stylesheet" type="text/css" href="./index.css">
-    <script src="./libs/zepto.min.js"></script>
-    <script src="./libs/zepto.touch.js"></script>
-    <script src="./configs/robotCfg.js"></script>
-    <script src="./configs/trackCfg.js"></script>
-    <script src="./configs/rockCfg.js"></script>
-  </head>
-  <body>
-    <div class="container">
-
 <!-- 首页 -->
 <div id="main" class="page show ready">
   <div>
@@ -113,53 +96,3 @@
     </div>
   </div>
 </div>
-
-
-<!-- 比赛页面 -->
-<div id="game" class="page">
-  <div>
-    <div class="status">
-      <div id="time">0.00</div>
-      <div class="distance"></div>
-      <div id="friction">空间力：1000</div>
-      <div id="">核能辐射：10</div>
-    </div>
-
-    <div class="scene">
-      <div class="scale">
-        <div class="scroll" id="track">
-          <div class="safe-zone start"></div>
-          <div class="safe-zone finish"></div>
-          <!-- <div class="rocks"></div> -->
-        </div>
-        <div class="tracks"></div>
-      </div>
-    </div>
-
-    <div class="control">
-      <div id="items"></div>
-
-      <div id="dashboard">
-        <div id="fuelboard" class="board left">1000</div>
-        <div id="hp">
-          <div></div>
-        </div>
-        <div id="speedboard" class="board right">200</div>
-      </div>
-
-      <div id="speed-ctrl">
-        <span>减速</span>
-        <div class="axis">
-          <div id="accelerator" class="accelerator"></div>
-        </div>
-        <span>加速</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-    </div>
-
-    <script src="./build.js"></script>
-  </body>
-</html>

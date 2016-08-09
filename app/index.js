@@ -1,4 +1,4 @@
-import MainPage from './pages/main';
+import MainPage from './pages/MainPage';
 
 window.onload = function () {
     MainPage.init();

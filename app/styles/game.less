@@ -1,0 +1,241 @@
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#game {
+  .status {
+    display: flex;
+    height: 32px;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #e9e9e9;
+
+    div {
+      flex: 1;
+      color: #21bd73;
+      text-align: center;
+    }
+  }
+
+  .scene {
+    position: relative;
+    flex: 1;
+    // height: 270px;
+    // display: flex;
+    // flex-direction: column;
+    overflow: hidden;
+
+    .scale {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 270px;
+      transform-origin: left top;
+      overflow: hidden;
+    }
+
+    .tracks {
+      position: absolute;
+      top:  0;
+      left: 0;
+      z-index: 2;
+      height: 183px;
+      padding: 1px 0 2px;
+      margin: 44px 0;
+      // background-color: #B5B694;
+      background-color: transparent;
+
+      .track {
+        // border-top: 1px dashed red;
+        padding-top: 1px;
+        background-image: url('./images/border.png');
+
+        &:first-child {
+          background-image: none;
+        }
+      }
+    }
+
+    .scroll {
+      height: 270px;
+      // padding: 44px 0;
+      background: pink url('./images/scroll.jpg') repeat-x left center;
+
+      .safe-zone {
+        position: relative;
+        z-index: 3;
+        width: 50px;
+        height: 270 - 44 * 2;
+        margin: 44px 0;
+        background-color: rgba(255,255,255,.5);
+
+        &.start {
+          float: left;
+        }
+
+        &.finish {
+          float: right;
+        }
+      }
+
+      .rock, .rocket-wrap {
+        position: absolute;
+        z-index: 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 1px;
+        transition: top 50ms;
+      }
+
+      .rock.disappear {
+        opacity: 0;
+        transition: opacity 200ms;
+      }
+
+      .rock > div {
+        width:  24px;
+        height: 24px;
+        border-radius: 2px;
+        transition: background-color 500ms;
+        // animation: rotate 2s linear infinite;
+      }
+
+      .rocket-wrap > div {
+        width:  24px;
+        height: 24px;
+        border-radius: 12px;
+        box-shadow: -4px 0px 2px 1px #888888;
+      }
+
+      // .size1 {width:   16px;height:   16px;}
+      // .size2 {width: 22.6px;height: 22.6px;}
+      // .size3 {width: 27.7px;height: 27.7px;}
+      // .size4 {width:   32px;height:   32px;}
+      // .size5 {width: 35.8px;height: 35.8px;}
+
+      .size1 {background-color: white;}
+      .size2 {background-color: blue;}
+      .size3 {background-color: green;}
+      .size4 {background-color: purple;}
+      .size5 {background-color: orange;}
+      .size6 {background-color: red;}
+      .size7 {background-color: black;}
+      .size8 {background-color: gold;}
+
+      .generate-rocket(5);
+
+      .generate-rocket(@n, @i:3) when (@i =< @n) {
+        &.track-@{i} .rocket-wrap,
+        &.track-@{i} .rock {
+          height: @track-height / @i;
+        }
+
+        .generate-rocket(@n, (@i + 1));
+      }
+
+
+    }
+  }
+
+  .control {
+    // flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 0 32px;
+    background-color: #e9e9e9;
+
+    #items {
+      width: 188px;
+      height: 32px;
+      background-color: gray;
+    }
+
+    #dashboard {
+      position: relative;
+
+      .board {
+        position: absolute;
+        top: 50%;
+        left: 24px;
+        z-index: 0;
+        box-sizing: content-box;
+        width: 42px;
+        color: #fff;
+        text-align: center;
+        line-height: 24px;
+        background-color: green;
+
+        &.left {
+          padding: 0 32px 0 8px;
+          border-top-left-radius: 10px;
+          border-bottom-left-radius: 10px;
+          transform: translate(-100%, -50%);
+        }
+
+        &.right {
+          padding: 0 8px 0 32px;
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+          transform: translate(0, -50%);
+        }
+      }
+
+      #hp {
+        position: relative;
+        z-index: 1;
+        width:  48px;
+        height: 48px;
+        border: 1px solid gray;
+        border-radius: 24px;
+        background-image: linear-gradient(to bottom, green, red);
+        overflow: hidden;
+
+        div {
+          height: 0;
+          background-color: #fff;
+          transition: height 500ms;
+        }
+      }
+    }
+
+
+    #speed-ctrl {
+      display: flex;
+      align-items: center;
+      font-size: 0;
+
+      span {
+        font-size: 14px;
+      }
+
+      .axis {
+        position: relative;
+        display: inline-block;
+        width: 100px;
+        height: 3px;
+        margin: 0 16px;
+        background-color: red;
+
+        .accelerator {
+          position: absolute;
+          top:    1px;
+          left:   50px;
+          width:  24px;
+          height: 24px;
+          border-radius: 12px;
+          background-color: blue;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+}

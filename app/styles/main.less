@@ -31,9 +31,17 @@
 
     .prototype-list {
       .main-between-div;
+      width: 296px;
+
+      & > p {
+        color: #fff;
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 16px;
+      }
 
       .prototype {
-        height: 32px;
+        height: 24px;
 
         & > * {
           float: left;
@@ -41,12 +49,35 @@
 
         & > span {
           color: #fff;
-          line-height: 32px;
+          line-height: 24px;
+
+          &:first-child {
+            display: inline-block;
+            width: 56px;
+            text-align: right;
+          }
+
+          span {
+            margin: 0 7px;
+          }
         }
 
         & > .progress {
           width: 100px;
           margin: 14px 16px;
+        }
+
+        & > .status {
+          float: right;
+          color: #fff;
+          text-align: right;
+          line-height: 24px;
+
+          & > span:nth-child(2n-1) {
+            display: inline-block;
+            width: 48px;
+            text-align: center;
+          }
         }
       }
     }

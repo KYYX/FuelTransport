@@ -1,45 +1,47 @@
 module.exports = (function () {
   var MyRobot;
-  var screenWidth  = window.innerWidth;
+  var screenWidth;
   var trackOffsetX = 0;  //地图滚动的距离
-  var distance;
+  var maxOffsetX;
   var tracks;
-  var $trackNode;
-  var $tracksNode;
+  var _scale;
+  var $map;
+  var $tracks;
 
   return {
-    init: function (_distance, _tracks, Robot) {
-      MyRobot = Robot;
+    init: function (_distance, _tracks, Robot, scale) {
+      _scale = scale;
 
-      distance = _distance;
+      var trackHeight = 180 / _tracks;
+
+      MyRobot = Robot;
+      maxOffsetX = _distance - window.innerWidth / scale;
       tracks = _tracks;
 
-      $trackNode   = $('#track');
-      $tracksNode  = $('.tracks');
+      $map    = $('#track');
+      $tracks = $('.tracks');
 
-      $trackNode.width(distance).addClass('track-' + tracks);
-
-      $trackNode.swipeUp(function () {
-        MyRobot.setTranslateY(-1);
-      });
-
-      $trackNode.swipeDown(function () {
-        MyRobot.setTranslateY(1);
-      });
+      $map.width(_distance).addClass('track-' + tracks);
+      $tracks.width(_distance);
 
       for (var i=0; i<tracks; i++) {
-         $tracksNode.append('<div class="track"></div>');
+         $tracks.append('<div class="track" style="height:' + trackHeight + 'px"></div>');
       }
     },
     update: function (myRollOffsetX, speed) {
-      if (Math.abs(myRollOffsetX) < 73) {
-        /* 当球体滚动64px再开始滚动地图 */
-      } else if (Math.abs(myRollOffsetX) < distance - screenWidth ) {
-        trackOffsetX -= speed / 60;
-        $trackNode.css("transform", "translateX(" + trackOffsetX + "px)")
-        // scrollNode.style.transform = "translateX(" + trackOffsetX + "px)";
+      if (Math.abs(myRollOffsetX) < 73 || Math.abs(trackOffsetX) === maxOffsetX) {
+        /* 屏幕不动 */
       } else {
-        /* 地图达到最大距离，停止滚动 */
+        trackOffsetX -= speed / 60;
+
+        if (trackOffsetX < 0 - maxOffsetX) {
+          trackOffsetX = 0 - maxOffsetX;
+        } else if (trackOffsetX > 0) {
+          trackOffsetX = 0;
+        } else { }
+
+        $map.css("transform", "translateX(" + trackOffsetX + "px)");
+        $tracks.css("transform", "translateX(" + trackOffsetX + "px)");
       }
     }
   };
