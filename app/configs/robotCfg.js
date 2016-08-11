@@ -1,3 +1,6 @@
+const LEVEL = ["D","C","B","A","S","SS","SSS","X"];
+const MODEL = ["", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ"];
+
 var robotCfg = {
   my: {
     color: "#70CCF0",

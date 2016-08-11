@@ -1,3 +1,5 @@
+@ScrollHeight: 270px;
+
 @keyframes rotate {
   from {
     transform: rotate(0deg);
@@ -35,7 +37,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      height: 270px;
+      height: @ScrollHeight;
       transform-origin: left top;
       overflow: hidden;
     }
@@ -63,7 +65,7 @@
     }
 
     .scroll {
-      height: 270px;
+      height: @ScrollHeight;
       // padding: 44px 0;
       background: pink url('./images/scroll.jpg') repeat-x left center;
 
@@ -71,7 +73,7 @@
         position: relative;
         z-index: 3;
         width: 50px;
-        height: 270 - 44 * 2;
+        height: @ScrollHeight - 44 * 2;
         margin: 44px 0;
         background-color: rgba(255,255,255,.5);
 
@@ -234,6 +236,35 @@
           border-radius: 12px;
           background-color: blue;
           transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+
+  & > .cover {
+    display: none;
+
+    & > div {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+
+      & > div {
+        width: 50%;
+        border-radius: 2px;
+        background-color: #fff;
+
+        & > .content {
+          padding: 32px;
+          font-size: 14px;
+          text-align: center;
+        }
+
+        & > .option {
+          padding: 16px;
+          border-top: 1px solid #aaa;
         }
       }
     }

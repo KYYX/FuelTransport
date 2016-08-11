@@ -1,7 +1,6 @@
 import Accelerator from './AcceleratorEntity.js';
 import       Track from './TrackEntity.js';
 import       Robot from './RobotEntity.js';
-import          AI from './AIEntity.js';
 import        Rock from './RockEntity.js';
 
 var STATUS = "NORMAL";
@@ -10,7 +9,10 @@ var RANDOM = function (min, max) {
   return Math.round(Math.random() * (max - min)) + min;
 };
 
-var $distanceStatus = $("#game .status > .distance");
+var $arrivedDialog   = $("#game .cover.arrived");
+var $exhaustedDialog = $("#game .cover.exhausted");
+var $crashedDialog   = $("#game .cover.crashed");
+var $distanceStatus  = $("#game .status > .distance");
 var $timeStatus = $("#time");
 var $fuelboard  = $("#fuelboard");
 var $speedboard = $("#speedboard");
@@ -33,32 +35,23 @@ var paused = false;
 var startTime = -1;
 var countDownInterval = -1; //倒计时
 
-var robots     = [];
-var rocks      = [[],[],[],[],[]];
-var tracks     = TrackCfg.tracks; //赛道数量
-var distance   = TrackCfg.distance; //赛道长度
-var friction   = TrackCfg.friction; //轨道摩擦力
-var robotWidth = 120 / tracks; //球体宽度
+var robots  = [];
+var rocks   = [[],[],[],[],[]];
+var MyRobot ;
+var tracks  ; //= TrackCfg.tracks; //赛道数量
+var distance; //= TrackCfg.distance; //赛道长度
+var friction; //= TrackCfg.friction; //轨道摩擦力
 
 //创建陨石
-var createRocks = function () {
-  for (var i=0; i<tracks; i++) {
-    var count    = 0;
-    var lastX    = screenWidth - 100;
-    var _rockCfg = $.extend(true, {}, rockCfg);
-
-    while (count < TrackCfg.rockCount) {
-      lastX += RANDOM(100, 300);
-      count += 1;
-
-      _rockCfg.track    = i + 1;
-      _rockCfg.weight   = RANDOM(1,50);
-      _rockCfg.speed    = 0 - RANDOM(0,200);
-      _rockCfg.distance = lastX;
-
-      rocks[i].push(new Rock(_rockCfg));
-    }
-  }
+var createRock = function (track, lastX) {
+  return new Rock({
+    width   : 24, //陨石宽
+    height  : 45, //轨道高
+    track   : track + 1,
+    weight  : RANDOM(1,50),
+    speed   : 0 - RANDOM(0,200),
+    distance: lastX,
+  });
 };
 
 //倒计时
@@ -183,28 +176,31 @@ var collisionDetection = function () {
 var setStatusBar = function (robot) {
   var config = robot.config;
 
-  if (startTime > -1 && tick % 2 === 0) {
-    var  costTime = new Date() - startTime;
-    if (costTime < 10) {
-      costTime = "000" + costTime;
-    } else if (costTime < 100) {
-      costTime = "00" + costTime;
-    } else if (costTime < 1000) {
-      costTime = "0" + costTime;
-    } else {
-      costTime = "" + costTime;
+  if (tick % 2 === 0) {
+    if (startTime > -1) {
+      var  costTime = new Date() - startTime;
+      if (costTime < 10) {
+        costTime = "000" + costTime;
+      } else if (costTime < 100) {
+        costTime = "00" + costTime;
+      } else if (costTime < 1000) {
+        costTime = "0" + costTime;
+      } else {
+        costTime = "" + costTime;
+      }
+
+      var       len = costTime.length;
+      var frontHalf = costTime.substring(0, len-3);
+      var  backHalf = costTime.substring(len-3, len-1);
+
+      $timeStatus.html(frontHalf + "." + backHalf);
     }
 
-    var       len = costTime.length;
-    var frontHalf = costTime.substring(0, len-3);
-    var  backHalf = costTime.substring(len-3, len-1);
+    $distanceStatus.html(Math.round(distance - robot.translateX));
 
-    $timeStatus.html(frontHalf + "." + backHalf);
+    $fuelboard.html(Math.round(config.fuel2));
   }
 
-  $distanceStatus.html(Math.round(distance - robot.translateX));
-
-  $fuelboard.html(Math.round(config.fuel2));
   $speedboard.html(Math.round(robot.speed));
 
   if (config.fuel2 === 0) {
@@ -252,40 +248,20 @@ var _update = function () {
     });
   }
 
+  setStatusBar(MyRobot);
+
   if (MyRobot.get("status") === "crash") {
-    if (STATUS !== "CRASH") {
-      if (STATUS !== "NORMAL") {
-        clearInterval(countDownInterval);
-      }
+    paused = true;
 
-      STATUS = "CRASH";
-
-      countDown(5, "Traffic accident ~ Game over!", _stop);
-    }
+    setTimeout(function () { $crashedDialog.fadeIn(50); }, 10);
   } else if (MyRobot.get("status") === "arrived") {
-    if (STATUS !== "ARRIVED") {
-      if (STATUS !== "NORMAL") {
-        clearInterval(countDownInterval);
-      }
+    paused = true;
 
-      STATUS = "ARRIVED";
-
-      countDown(3, "Misson complete ~ Congratulation!", _stop);
-    }
+    setTimeout(function () { $arrivedDialog.fadeIn(50); }, 10);
   } else if (MyRobot.get("status") === "empty") {
-    if (STATUS !== "EMPTY") {
-      if (STATUS !== "NORMAL") {
-        clearInterval(countDownInterval);
-      }
+    paused = true;
 
-      STATUS = "EMPTY";
-
-      console.log("坚持10秒，等待救援队伍");
-      countDown(10, "Save by rescue team ~ hoooray!", _stop);
-    }
-
-    Track.update(MyRobot.translateX, MyRobot.speed);
-    setStatusBar(MyRobot);
+    setTimeout(function () { $exhaustedDialog.fadeIn(50); }, 10);
   } else {
     if (STATUS !== "NORMAL") {
       clearInterval(countDownInterval);
@@ -293,7 +269,7 @@ var _update = function () {
     }
     //更新赛道
     Track.update(MyRobot.translateX, MyRobot.speed);
-    setStatusBar(MyRobot);
+    // setStatusBar(MyRobot);
   }
 
   //如果不暂停，则继续主循环
@@ -334,11 +310,39 @@ var _quit = function () {
   rocks  = [[],[],[],[],[]];
 };
 
-var _init = function (scale) {
-  SCALE = scale;
+var _init = function (config) {
+  SCALE    = config.scale;
+  tracks   = config.tracks;   //赛道数量
+  distance = config.distance; //赛道长度
+  friction = config.friction; //轨道摩擦力
+
+  var oneTrackRockCount = config.rockCount;
+
+  for (var i=0; i<tracks; i++) {
+    var count = 0;
+    var lastX = screenWidth - 100;
+
+    while (count < oneTrackRockCount) {
+      lastX += RANDOM(100, 300);
+      count += 1;
+
+      rocks[i].push(createRock(i, lastX));
+    }
+  }
+
+  MyRobot = new Robot($.extend(true, KIM.rocket, {
+    color: "#70CCF0",
+    x: 10,
+    y: 1,
+    tracks: tracks
+  }));
+
+  robots.push(MyRobot);
 
   Track.init(distance, tracks, MyRobot, SCALE);
   Accelerator.init(MyRobot);
+
+  setStatusBar(MyRobot);
 }
 
 //上下移动事件
@@ -350,35 +354,12 @@ $(".scene").swipeUp(function () {
 
 MainLoop.onmessage = _update;
 
-var MyRobot = new Robot($.extend(true, robotCfg.my, {tracks: tracks}));
-
-robots.push(MyRobot);
-
-for (var i=0; i<tracks; i++) {
-  var count    = 0;
-  var lastX    = screenWidth - 100;
-  var _rockCfg = $.extend(true, {}, rockCfg);
-
-  while (count < TrackCfg.rockCount) {
-    lastX += RANDOM(100, 300);
-    count += 1;
-
-    _rockCfg.track    = i + 1;
-    _rockCfg.weight   = RANDOM(1,50);
-    _rockCfg.speed    = 0 - RANDOM(0,200);
-    _rockCfg.distance = lastX;
-
-    rocks[i].push(new Rock(_rockCfg));
-  }
-}
-
-//       Track.init(distance, tracks, MyRobot);
-// Accelerator.init(MyRobot);
-
-setStatusBar(MyRobot);
-
 module.exports = {
-  init: _init,
+  init:  _init,
   start: _start,
-  pause: _pause
+  pause: _pause,
+  addFuel: function (fuel) {
+    MyRobot.config.fuel2 += fuel;
+    MyRobot.status = "normal";
+  }
 };

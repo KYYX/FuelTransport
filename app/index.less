@@ -6,8 +6,9 @@
   box-sizing: border-box;
   padding: 0;
   margin:  0;
-  font-size: 14px;
+  font-size: 12px;
   font-family: '微软雅黑';
+  outline: none;
 }
 
 .fl {
@@ -94,7 +95,19 @@
     content: '';
     display: none;
   }
+
+  & > .cover {
+    position: absolute;
+    top:  0;
+    left: 0;
+    z-index: 10;
+    width:  100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+  }
 }
 
+
 @import "./styles/main.less";
+@import "./styles/map.less";
 @import "./styles/game.less";

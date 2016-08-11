@@ -8,9 +8,11 @@
     <link rel="stylesheet" type="text/css" href="./index.css">
     <script src="./libs/zepto.min.js"></script>
     <script src="./libs/zepto.touch.js"></script>
+    <script src="./libs/zepto.fx.js"></script>
+    <script src="./libs/zepto.fx_methods.js"></script>
     <script src="./configs/robotCfg.js"></script>
     <script src="./configs/trackCfg.js"></script>
-    <script src="./configs/rockCfg.js"></script>
+    <!-- <script src="./configs/rockCfg.js"></script> -->
   </head>
   <body>
     <div class="container">
@@ -19,12 +21,12 @@
 <div id="main" class="page show ready">
   <div>
     <div class="above">
-      <div>编号</div>
-      <div>89757</div>
-      <div>金币</div>
-      <div>100</div>
-      <div>钻石</div>
-      <div>10</div>
+      <div>商店</div>
+      <div>拍卖场</div>
+      <div>委托屋</div>
+      <div>加油站</div>
+      <div>修理厂</div>
+      <div>情报站</div>
     </div>
     <div class="between">
       <div class="prototype-list">
@@ -36,49 +38,39 @@
           </div>
           <span>1118</span>
         </div> -->
-        <p>永恒号 &bull; 星际级 &bull; 白1 </p>
+        <p>
+          <span class="attr-rocket-name"></span> &bull;
+          <span class="attr-rocket-level"></span>级 &bull;
+          <span class="attr-rocket-model"></span>型
+        </p>
         <div class="prototype">
           <span>耐<span>久</span>度</span>
           <div class="status">
-            <span>2000</span>
-            <span>/</span>
-            <span>3000</span>
-            <span>/</span>
-            <span>10000</span>
+            <span class="attr-rocket-durability2"></span>
           </div>
         </div>
         <div class="prototype">
           <span>能<span>源</span>箱</span>
           <div class="status">
-            <span>2000</span>
-            <span>/</span>
-            <span>3000</span>
-            <span>/</span>
-            <span>10000</span>
+            <span class="attr-rocket-fuel2"></span>
           </div>
         </div>
         <div class="prototype">
           <span>推<span>进</span>力</span>
           <div class="status">
-            <span>3000</span>
-            <span>/</span>
-            <span>10000</span>
+            <span class="attr-rocket-power"></span>
           </div>
         </div>
         <div class="prototype">
           <span>制<span>动</span>力</span>
           <div class="status">
-            <span>3000</span>
-            <span>/</span>
-            <span>10000</span>
+            <span class="attr-rocket-braking"></span>
           </div>
         </div>
         <div class="prototype">
           <span>能源转换</span>
           <div class="status">
-            <span>3000</span>
-            <span>/</span>
-            <span>10000</span>
+            <span class="attr-rocket-cost"></span>
           </div>
         </div>
 
@@ -105,15 +97,54 @@
     -->
     </div>
     <div class="below">
-      <div>商店</div>
+      <div>仓库</div>
       <div>舰仓</div>
-      <div data-location="game">地图</div>
+      <div data-location="map">地图</div>
+      <div>实验室</div>
       <div>好友</div>
-      <div>情报</div>
     </div>
   </div>
 </div>
 
+<div id="page-map" class="page">
+  <p>选择目的地坐标</p>
+  <div>
+    <div>
+      <div>
+        <div class="src attr-position-src-1"></div>
+        <div class="src attr-position-src-2"></div>
+        <span>.</span>
+        <div class="src attr-position-src-3"></div>
+        <div class="src attr-position-src-4"></div>
+      </div>
+      <div>
+        <span>&darr;</span>
+      </div>
+      <div>
+        <div class="dest attr-position-dest-1"></div>
+        <div class="dest attr-position-dest-2"></div>
+        <span>.</span>
+        <div class="dest attr-position-dest-3"></div>
+        <div class="dest attr-position-dest-4"></div>
+      </div>
+    </div>
+  </div>
+  <ul class="disabled">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    <li>6</li>
+    <li>7</li>
+    <li>8</li>
+    <li>9</li>
+    <li>0</li>
+  </ul>
+
+  <i class="button back">返回</i>
+  <i class="button forward">出发</i>
+</div>
 
 <!-- 比赛页面 -->
 <div id="game" class="page">
@@ -153,6 +184,35 @@
           <div id="accelerator" class="accelerator"></div>
         </div>
         <span>加速</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover exhausted">
+    <div>
+      <div>
+        <div class="content">亲，燃料木有了，你准备怎么办呢？</div>
+        <div class="option first">请系统免费把我拖回始发地吧 （5）</div>
+        <div class="option last">喂，保险公司嘛，我是你们的VIP呀，赶紧来送油</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover arrived">
+    <div>
+      <div>
+        <div class="content">安全抵达，老司机名不虚传。</div>
+        <div class="option">进入星球</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover crashed">
+    <div>
+      <div>
+        <div class="content">...</div>
+        <div class="option first">损失惨重，自认倒霉</div>
+        <div class="option last">Call保险，坐等理赔</div>
       </div>
     </div>
   </div>

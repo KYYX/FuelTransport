@@ -1,22 +1,22 @@
 .main-between-div {
-  padding: 16px;
-  border-radius: 4px;
-  background-color: rgba(0,0,0,.5);
+  padding-bottom: 8px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  // background-color: rgba(0,0,0,.5);
 }
 
 #main {
   .above {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-around;
+    align-items: center;
     height: 32px;
-    padding: 0 32px;
-    background-color: @c500;
+    border-bottom: 1px solid #ccc;
+    // padding: 0 32px;
+    // background-color: @c500;
 
     div {
-      padding: 0 8px;
-      color: #fff;
-      text-align: center;
-      line-height: 32px;
+
     }
   }
 
@@ -26,29 +26,35 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 32px;
-    background-image: url("./images/bg.jpg");
-    background-size: cover;
+    // background-image: url("./images/bg.jpg");
+    // background-size: cover;
 
     .prototype-list {
       .main-between-div;
-      width: 296px;
+      width: 218px;
+      // box-shadow: 0 0 8px 1px;
 
       & > p {
-        color: #fff;
         text-align: center;
-        font-size: 16px;
-        margin-bottom: 16px;
+        font-size: 14px;
+        padding: 8px 0;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #aaa;
+
+        & > span {
+          font-size: 14px;
+        }
       }
 
       .prototype {
         height: 24px;
+        padding: 0 48px;
 
         & > * {
           float: left;
         }
 
         & > span {
-          color: #fff;
           line-height: 24px;
 
           &:first-child {
@@ -68,15 +74,15 @@
         }
 
         & > .status {
-          float: right;
-          color: #fff;
+          // float: right;
+          margin-left: 16px;
           text-align: right;
           line-height: 24px;
 
           & > span:nth-child(2n-1) {
             display: inline-block;
             width: 48px;
-            text-align: center;
+            // text-align: center;
           }
         }
       }
@@ -109,7 +115,7 @@
   .below {
     display: flex;
     height: 32px;
-    background-color: #ccc;
+    border-top: 1px solid #ccc;
 
     & > div {
       flex: 1;

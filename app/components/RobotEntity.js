@@ -15,11 +15,11 @@ function RobotEntity (config) {
 
   this.tracks = config.tracks; //车道总数
   this.height = 180 / this.tracks;
-  this.width  = SIZE[config.size];
-  this.size   = config.size;
+  this.width  = SIZE[config.level];
+  this.level   = config.level;
   this.durability = config.durability2;
 
-  this.Ball = new Ball(config.color, config.size, config.x, this.calcOffsetY());
+  this.Ball = new Ball(config.color, config.level, config.x, this.calcOffsetY());
 }
 
 /* 计算Y轴偏移量 */
@@ -53,10 +53,10 @@ RobotEntity.prototype.getPosition = function () {
 
 RobotEntity.prototype.collide = function (rock) {
   var   maxFuel = this.config.durability2;
-  var  rockSize = rock.size;
+  var  rockSize = rock.level;
   var rockSpeed = rock.speed;
 
-  var thisSize  = this.size;
+  var thisSize  = this.level;
   var thisSpeed = this.speed;
 
   var damage = 0;
@@ -98,17 +98,16 @@ RobotEntity.prototype.setTranslateY = function (offset) {
 
 /* 前进 */
 RobotEntity.prototype.update = function (friction) {
-  if (this.status === "empty") {
-    this.power = 0;
-  }
+  // if (this.status === "empty") {
+  //   this.power = 0;
+  // }
 
-  var power = this.power + friction;
-  var a = power / (this.config.size * Math.abs(this.speed || 1));
+  var a = (this.power + friction) / (this.config.level * Math.abs(this.speed || 1));
 
   this.speed += a / 60;
 
   this.translateX   += this.speed / 60;
-  this.config.fuel2 -= this.power / 10 / 60 * this.config.size;
+  this.config.fuel2 -= this.power / 10 / 60 * this.config.level;
 
   if (this.translateX < 0) {
     this.translateX = 0;

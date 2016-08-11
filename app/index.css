@@ -2,8 +2,9 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-family: '微软雅黑';
+  outline: none;
 }
 .fl {
   float: left;
@@ -66,23 +67,26 @@
   content: '';
   display: none;
 }
-.main-between-div {
-  padding: 16px;
-  border-radius: 4px;
+.page > .cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+}
+.main-between-div {
+  padding-bottom: 8px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
 }
 #main .above {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
+  align-items: center;
   height: 32px;
-  padding: 0 32px;
-  background-color: #21bd73;
-}
-#main .above div {
-  padding: 0 8px;
-  color: #fff;
-  text-align: center;
-  line-height: 32px;
+  border-bottom: 1px solid #ccc;
 }
 #main .between {
   flex: 1;
@@ -90,29 +94,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 32px;
-  background-image: url("images/bg.jpg");
-  background-size: cover;
 }
 #main .between .prototype-list {
-  padding: 16px;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 296px;
+  padding-bottom: 8px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  width: 218px;
 }
 #main .between .prototype-list > p {
-  color: #fff;
   text-align: center;
-  font-size: 16px;
-  margin-bottom: 16px;
+  font-size: 14px;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #aaa;
+}
+#main .between .prototype-list > p > span {
+  font-size: 14px;
 }
 #main .between .prototype-list .prototype {
   height: 24px;
+  padding: 0 48px;
 }
 #main .between .prototype-list .prototype > * {
   float: left;
 }
 #main .between .prototype-list .prototype > span {
-  color: #fff;
   line-height: 24px;
 }
 #main .between .prototype-list .prototype > span:first-child {
@@ -128,22 +134,20 @@
   margin: 14px 16px;
 }
 #main .between .prototype-list .prototype > .status {
-  float: right;
-  color: #fff;
+  margin-left: 16px;
   text-align: right;
   line-height: 24px;
 }
 #main .between .prototype-list .prototype > .status > span:nth-child(2n-1) {
   display: inline-block;
   width: 48px;
-  text-align: center;
 }
 #main .between .package {
   height: 192px;
   width: 192px;
-  padding: 16px;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
+  padding-bottom: 8px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
 }
 #main .between .package > div {
   float: left;
@@ -161,12 +165,94 @@
 #main .below {
   display: flex;
   height: 32px;
-  background-color: #ccc;
+  border-top: 1px solid #ccc;
 }
 #main .below > div {
   flex: 1;
   text-align: center;
   line-height: 32px;
+}
+#page-map > div {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+#page-map > div input {
+  width: 24px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  margin: 0 4px;
+  text-align: center;
+  line-height: 24px;
+}
+#page-map > div > div > div {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+#page-map .src,
+#page-map .dest {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  margin: 0 4px;
+  text-align: center;
+  line-height: 22px;
+}
+#page-map .dest.focus {
+  border-color: orange;
+}
+#page-map p {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+}
+#page-map ul {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  width: 400px;
+  height: 32px;
+  list-style-type: none;
+  transform: translateX(-50%);
+}
+#page-map ul > li {
+  float: left;
+  width: 32px;
+  margin: 0 4px;
+  border: 1px solid #aaa;
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+}
+#page-map ul.disabled > li {
+  color: #ababab;
+}
+#page-map .button {
+  position: absolute;
+  bottom: -64px;
+  width: 128px;
+  height: 128px;
+  padding: 32px 24px;
+  border-radius: 64px;
+  color: #fff;
+  font-style: normal;
+  background-color: #21bd73;
+}
+#page-map .button.back {
+  left: -64px;
+  text-align: right;
+}
+#page-map .button.forward {
+  right: -64px;
+}
+#page-map .button.disabled {
+  background-color: #ababab;
 }
 @keyframes rotate {
   from {
@@ -226,7 +312,7 @@
   position: relative;
   z-index: 3;
   width: 50px;
-  height: 182;
+  height: 182px;
   margin: 44px 0;
   background-color: rgba(255, 255, 255, 0.5);
 }
@@ -378,4 +464,28 @@
   border-radius: 12px;
   background-color: blue;
   transform: translate(-50%, -50%);
+}
+#game > .cover {
+  display: none;
+}
+#game > .cover > div {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+#game > .cover > div > div {
+  width: 50%;
+  border-radius: 2px;
+  background-color: #fff;
+}
+#game > .cover > div > div > .content {
+  padding: 32px;
+  font-size: 14px;
+  text-align: center;
+}
+#game > .cover > div > div > .option {
+  padding: 16px;
+  border-top: 1px solid #aaa;
 }
