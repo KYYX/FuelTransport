@@ -12,24 +12,15 @@ var setAttr = function (rocket) {
 
   for (var key in rocket) {
     if (key !== "level") {
-      $(".attr-rocket-" + key).html(rocket[key]);
+      var value = typeof rocket[key] === "string" ? rocket[key] : Math.round(rocket[key]);
+      $(".attr-rocket-" + key).html(value);
     }
   }
 };
 
-var setPosition = function (position) {
-  var _points = position.split(",");
-
-  _points.forEach(function (point, index) {
-    $(".attr-position-src-"  + (index + 1)).html(point);
-    $(".attr-position-dest-" + (index + 1)).html(point);
-  });
-}
-
 $page.find("[data-location]").tap(function () {
   var location = $(this).data("location");
 
-  // $page.removeClass("show ready");
   Plugins.route.locateTo($page, location);
 });
 
@@ -38,7 +29,6 @@ module.exports = {
     $page.addClass("show");
 
     setAttr(KIM.rocket);
-    setPosition(KIM.position);
 
     setTimeout(function () {
         $page.addClass("ready");

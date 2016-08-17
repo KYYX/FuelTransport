@@ -1,23 +1,23 @@
 import Ball from './BallEntity';
 
-const SIZE = [0, 16, 22.6, 27,7, 32, 35.8];
-const HURT = [0, 5, 4, 3, 2];
+// const SIZE = [0, 16, 22.6, 27,7, 32, 35.8];
+// const HURT = [0, 5, 4, 3, 2];
 
 function RobotEntity (config) {
   this.status = "normal";
 
   this.config = config;
   this.power  = 0; //当前动力
-  this.speed  = config.speed || 0;
+  this.speed  = 0;
 
   this.translateX = config.x;
   this.translateY = config.y;
 
   this.tracks = config.tracks; //车道总数
   this.height = 180 / this.tracks;
-  this.width  = SIZE[config.level];
-  this.level   = config.level;
-  this.durability = config.durability2;
+  this.width  = 24; //SIZE[config.level];
+  // this.level  = config.level;
+  // this.durability = config.durability2;
 
   this.Ball = new Ball(config.color, config.level, config.x, this.calcOffsetY());
 }
@@ -52,31 +52,33 @@ RobotEntity.prototype.getPosition = function () {
 };
 
 RobotEntity.prototype.collide = function (rock) {
-  var   maxFuel = this.config.durability2;
-  var  rockSize = rock.level;
-  var rockSpeed = rock.speed;
+  // var durability2 = this.config.durability2;
+  var  rockWeight = rock.weight;
+  var   rockSpeed = rock.speed;
 
-  var thisSize  = this.level;
+  // var thisSize  = this.level;
   var thisSpeed = this.speed;
 
-  var damage = 0;
+  var damage = Math.sqrt(rockWeight * Math.abs(thisSpeed - rockSpeed));
 
-  if (rockSpeed * thisSpeed > 0) {
-    damage = Math.abs(thisSize * Math.abs(thisSpeed) - rockSize * Math.abs(rockSpeed));
-  } else {
-    damage = Math.abs(thisSize * thisSpeed - rockSize * rockSpeed);
-  }
-
-  thisSpeed -= damage / (thisSize + rockSize); //damage / thisSize;
+  // if (rockSpeed * thisSpeed > 0) {
+  //   damage = Math.abs(thisSize * Math.abs(thisSpeed) - rockSize * Math.abs(rockSpeed));
+  // } else {
+  //   damage = Math.abs(thisSize * thisSpeed - rockSize * rockSpeed);
+  // }
+  //
+  // thisSpeed -= damage / (thisSize + rockSize); //damage / thisSize;
 
   rock.disappear();
 
-  this.durability -= damage;
-  this.speed = thisSpeed;
+  this.config.durability2 -= damage;
+  this.speed = thisSpeed / 2;
 
-  $("#hp > div").height((maxFuel - this.durability) / maxFuel * 100 + "%");
+  var MaxShield = this.config.durability1;
+  var CurShield = this.config.durability2;
+  $("#hp > div").height((MaxShield - CurShield) / MaxShield * 100 + "%");
 
-  console.log("剩余耐久：" + Math.round(this.durability));
+  // console.log("剩余耐久：" + Math.round(this.durability));
 
   if (this.durability <= 0) {
     this.status = "crash";
@@ -102,12 +104,12 @@ RobotEntity.prototype.update = function (friction) {
   //   this.power = 0;
   // }
 
-  var a = (this.power + friction) / (this.config.level * Math.abs(this.speed || 1));
+  var a = (this.power + friction) / this.config.weight;
 
-  this.speed += a / 60;
+  this.speed += a / window.cfg.FRAMES;
 
-  this.translateX   += this.speed / 60;
-  this.config.fuel2 -= this.power / 10 / 60 * this.config.level;
+  this.translateX   += this.speed / window.cfg.FRAMES;
+  this.config.fuel2 -= this.power / 1000 * 100 / this.config.cost / window.cfg.FRAMES;
 
   if (this.translateX < 0) {
     this.translateX = 0;

@@ -1,5 +1,5 @@
 .main-between-div {
-  padding-bottom: 8px;
+  // padding-bottom: 8px;
   border: 1px solid #aaa;
   border-radius: 2px;
   // background-color: rgba(0,0,0,.5);
@@ -10,7 +10,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 32px;
+    height: 40px;
     border-bottom: 1px solid #ccc;
     // padding: 0 32px;
     // background-color: @c500;
@@ -25,65 +25,55 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 32px;
+    padding: 0 24px;
     // background-image: url("./images/bg.jpg");
     // background-size: cover;
 
     .prototype-list {
       .main-between-div;
-      width: 218px;
+      width: 400px;
       // box-shadow: 0 0 8px 1px;
 
-      & > p {
-        text-align: center;
-        font-size: 14px;
-        padding: 8px 0;
-        margin-bottom: 8px;
+      & > div {
+        display: flex;
         border-bottom: 1px solid #aaa;
 
         & > span {
-          font-size: 14px;
+          width: 56px;
+          padding: 4px 0;
+          text-align: center;
+        }
+
+        & > span:nth-child(2) {
+          flex: 1;
+          width: auto;
+          padding: 4px 8px;
+        }
+
+        & > span:nth-child(2n-1) {
+          color: #fff;
+          background-color: #aaa;
         }
       }
 
-      .prototype {
-        height: 24px;
-        padding: 0 48px;
+      & > table {
 
-        & > * {
-          float: left;
+
+        th, td {
+          padding: 8px 0;
+          text-align: center;
         }
 
-        & > span {
-          line-height: 24px;
-
-          &:first-child {
-            display: inline-block;
-            width: 56px;
-            text-align: right;
-          }
-
-          span {
-            margin: 0 7px;
-          }
+        th {
+          border-bottom: 1px solid #aaa;
         }
 
-        & > .progress {
-          width: 100px;
-          margin: 14px 16px;
+        td > span {
+          margin: 0 6px;
         }
 
-        & > .status {
-          // float: right;
-          margin-left: 16px;
-          text-align: right;
-          line-height: 24px;
-
-          & > span:nth-child(2n-1) {
-            display: inline-block;
-            width: 48px;
-            // text-align: center;
-          }
+        tr:nth-child(2n) > td {
+          background-color: #eee;
         }
       }
     }
@@ -114,13 +104,9 @@
 
   .below {
     display: flex;
-    height: 32px;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px;
     border-top: 1px solid #ccc;
-
-    & > div {
-      flex: 1;
-      text-align: center;
-      line-height: 32px;
-    }
   }
 }

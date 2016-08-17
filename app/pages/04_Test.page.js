@@ -50,7 +50,7 @@ $crashedDialog.find(".option").tap(function () {
 });
 
 module.exports = {
-    init: function (distance) {
+    init: function () {
         $page.addClass("show");
         var sceneHeight = $(".scene").height();
         var scale = sceneHeight / 270;
@@ -62,8 +62,8 @@ module.exports = {
         Engine.init({
           scale   :  scale,
           tracks  :  4,    //赛道数量
-          distance:  distance, //赛道长度
-        });
+          distance:  999999, //赛道长度
+        }, true);
 
         setTimeout(function () {
             $page.addClass("ready");

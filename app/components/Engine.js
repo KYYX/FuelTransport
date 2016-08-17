@@ -3,12 +3,15 @@ import       Track from './TrackEntity.js';
 import       Robot from './RobotEntity.js';
 import        Rock from './RockEntity.js';
 
-var STATUS = "NORMAL";
-var SCALE  = 1;
+var STATUS  = "NORMAL";
+var SCALE   = 1;
+var UPDATED = true;
+
 var RANDOM = function (min, max) {
   return Math.round(Math.random() * (max - min)) + min;
 };
 
+var $monitor = $("#game .monitor");
 var $arrivedDialog   = $("#game .cover.arrived");
 var $exhaustedDialog = $("#game .cover.exhausted");
 var $crashedDialog   = $("#game .cover.crashed");
@@ -20,11 +23,11 @@ var $speedboard = $("#speedboard");
 var workerTimeout; //监控worker;
 var workerJS = `
   onmessage = function (event) {
-    if (event.data === 200) {
-      setTimeout(function () {
-        postMessage(event.data);
-      }, 1000 / 60);
-    }
+    var waitTime = 1000 / 50 - event.data;
+    waitTime = waitTime < 0 ? 0 : waitTime;
+    setTimeout(function () {
+      postMessage(+new Date());
+    }, waitTime);
   }`;
 var blobForWorker = new Blob([workerJS], {type: "text/javascript"});
 
@@ -33,6 +36,7 @@ var tick = 0;
 var screenWidth = window.innerWidth;
 var paused = false;
 var startTime = -1;
+var lastTime = 0;
 var countDownInterval = -1; //倒计时
 
 var robots  = [];
@@ -40,18 +44,22 @@ var rocks   = [[],[],[],[],[]];
 var MyRobot ;
 var tracks  ; //= TrackCfg.tracks; //赛道数量
 var distance; //= TrackCfg.distance; //赛道长度
-var friction; //= TrackCfg.friction; //轨道摩擦力
+var friction = 0; //= TrackCfg.friction; //轨道摩擦力
 
 //创建陨石
 var createRock = function (track, lastX) {
-  return new Rock({
+  var rock = new Rock({
     width   : 24, //陨石宽
     height  : 45, //轨道高
     track   : track + 1,
     weight  : RANDOM(1,50),
     speed   : 0 - RANDOM(0,200),
-    distance: lastX,
+    distance: lastX//screenWidth / SCALE - 24,
   });
+
+  rock.render();
+
+  return rock;
 };
 
 //倒计时
@@ -209,8 +217,12 @@ var setStatusBar = function (robot) {
 };
 
 //更新对象状态
-var _update = function () {
+var _update = function (event) {
   tick += 1;
+
+  // window.cfg.FRAMES = Math.round(1000 / (event.data - lastTime));
+
+  lastTime = +new Date();//event.data;
 
   clearTimeout(workerTimeout);
 
@@ -223,7 +235,7 @@ var _update = function () {
   //更新岩石状态
   rocks.forEach(function (rocksForTrack) {
     rocksForTrack.forEach(function (rock) {
-      rock.update(friction);
+      rock.status === "active" && rock.update(friction);
     });
   });
 
@@ -243,6 +255,7 @@ var _update = function () {
       var rockDistance = rock.get("distance");
 
       if (Math.abs(rocketDistance - rockDistance) <= screenWidth / SCALE) {
+        rock.invoke();
         rock.render();
       }
     });
@@ -263,13 +276,8 @@ var _update = function () {
 
     setTimeout(function () { $exhaustedDialog.fadeIn(50); }, 10);
   } else {
-    if (STATUS !== "NORMAL") {
-      clearInterval(countDownInterval);
-      STATUS = "NORMAL";
-    }
     //更新赛道
     Track.update(MyRobot.translateX, MyRobot.speed);
-    // setStatusBar(MyRobot);
   }
 
   //如果不暂停，则继续主循环
@@ -278,8 +286,14 @@ var _update = function () {
       console.warn('Worker terminate!!!');
     }, 1000);
 
-    MainLoop.postMessage(200);
+    // var nowTime = +new Date();
+    // $monitor.html(nowTime - lastTime);
+    var time_ = +new Date() - lastTime;
+
+    MainLoop.postMessage(time_);
   }
+
+  // UPDATED = true;
 };
 
 //结束
@@ -292,11 +306,12 @@ var _stop = function () {
 var _start = function () {
   if (startTime === -1) {
     startTime = +new Date();
+    lastTime = startTime;
   } else {
     paused = false;
   }
 
-  MainLoop.postMessage(200);
+  MainLoop.postMessage(0);
 };
 
 //暂停
@@ -310,27 +325,35 @@ var _quit = function () {
   rocks  = [[],[],[],[],[]];
 };
 
-var _init = function (config) {
+/**
+ * 初始化游戏
+ * 设置缩放、轨道数量、距离
+ * 创建陨石群
+ * 创建我的火舰
+ */
+var _init = function (config, isTest) {
   SCALE    = config.scale;
   tracks   = config.tracks;   //赛道数量
   distance = config.distance; //赛道长度
-  friction = config.friction; //轨道摩擦力
 
-  var oneTrackRockCount = config.rockCount;
+  // var oneTrackRockCount = config.rockCount;
 
-  for (var i=0; i<tracks; i++) {
-    var count = 0;
-    var lastX = screenWidth - 100;
+  if (!isTest) {
+    for (var i=0; i<tracks; i++) {
+      var count = 0;
+      var lastX = screenWidth / SCALE - 100;//screenWidth - 100;
 
-    while (count < oneTrackRockCount) {
-      lastX += RANDOM(100, 300);
-      count += 1;
+      // while (count < oneTrackRockCount) {
+      while (lastX < distance) {
+        lastX += RANDOM(100, 300);
+        count += 1;
 
-      rocks[i].push(createRock(i, lastX));
+        rocks[i].push(createRock(i, lastX));
+      }
     }
   }
 
-  MyRobot = new Robot($.extend(true, KIM.rocket, {
+  MyRobot = new Robot($.extend(KIM.rocket, {
     color: "#70CCF0",
     x: 10,
     y: 1,
@@ -339,11 +362,19 @@ var _init = function (config) {
 
   robots.push(MyRobot);
 
-  Track.init(distance, tracks, MyRobot, SCALE);
+  Track.init(distance, tracks, SCALE);
   Accelerator.init(MyRobot);
 
   setStatusBar(MyRobot);
 }
+
+var _reset = function () {
+  robots  = [];
+  rocks   = [[],[],[],[],[]];
+  MyRobot = null;
+
+  $("#game").find(".rocket-wrap, .rock").remove();
+};
 
 //上下移动事件
 $(".scene").swipeUp(function () {
@@ -352,14 +383,29 @@ $(".scene").swipeUp(function () {
   MyRobot.setTranslateY(1);
 });
 
+screen.orientation.addEventListener("change", function () {
+  var angle = screen.orientation.angle;
+
+  if (angle !== 90 && angle !== 270) {
+    _pause();
+  } else {
+    if (paused) {
+      _start();
+    }
+  }
+})
+
 MainLoop.onmessage = _update;
 
 module.exports = {
   init:  _init,
+  reset: _reset,
   start: _start,
   pause: _pause,
   addFuel: function (fuel) {
     MyRobot.config.fuel2 += fuel;
     MyRobot.status = "normal";
+
+    return this;
   }
 };

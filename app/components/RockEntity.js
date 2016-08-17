@@ -30,6 +30,10 @@ Rock.prototype.disappear = function () {
   this.status = "disappear";
 };
 
+Rock.prototype.invoke = function () {
+  this.status = "active";
+};
+
 Rock.prototype.remove = function () {
   this.node.remove();
 };
@@ -55,15 +59,15 @@ Rock.prototype.update = function (friction) {
     a = friction / (Math.pow(this.level, 2) * Math.abs(this.speed));
   }
 
-  this.speed += Math.round(a * 100 / 60) / 100;
-  this.distance += Math.round(this.speed * 100 / 60) / 100;
+  this.speed += Math.round(a * 100 / window.cfg.FRAMES) / 100;
+  this.distance += Math.round(this.speed * 100 / window.cfg.FRAMES) / 100;
 };
 
 Rock.prototype.render = function () {
   var style = "top:" + (45 + (this.track - 1) * this.height) + "px;"
             + "transform:translateX(" + this.distance + "px)";
 
-  var node = this.node 
+  var node = this.node
            = $("<div class='rock' style='" + style + "'>" +
                " <div class='size" + this.level + "'></div>" +
                "</div>");

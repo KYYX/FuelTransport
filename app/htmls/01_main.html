@@ -1,13 +1,14 @@
 <!-- 首页 -->
-<div id="main" class="page show ready">
+<div id="main" class="page">
   <div>
     <div class="above">
       <div>商店</div>
       <div>拍卖场</div>
       <div>委托屋</div>
-      <div>加油站</div>
-      <div>修理厂</div>
+      <!-- <div>加油站</div>
+      <div>修理厂</div> -->
       <div>情报站</div>
+      <div data-location="test">测试场</div>
     </div>
     <div class="between">
       <div class="prototype-list">
@@ -19,63 +20,58 @@
           </div>
           <span>1118</span>
         </div> -->
-        <p>
-          <span class="attr-rocket-name"></span> &bull;
-          <span class="attr-rocket-level"></span>级 &bull;
-          <span class="attr-rocket-model"></span>型
-        </p>
-        <div class="prototype">
-          <span>耐<span>久</span>度</span>
-          <div class="status">
-            <span class="attr-rocket-durability2"></span>
-          </div>
+        <div>
+          <span>名称</span>
+          <span class="attr-rocket-name"></span>
+          <span>等级</span>
+          <span class="attr-rocket-level"></span>
+          <span>型号</span>
+          <span class="attr-rocket-model"></span>
         </div>
-        <div class="prototype">
-          <span>能<span>源</span>箱</span>
-          <div class="status">
-            <span class="attr-rocket-fuel2"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>推<span>进</span>力</span>
-          <div class="status">
-            <span class="attr-rocket-power"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>制<span>动</span>力</span>
-          <div class="status">
-            <span class="attr-rocket-braking"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>能源转换</span>
-          <div class="status">
-            <span class="attr-rocket-cost"></span>
-          </div>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>属性</th>
+              <th>当前值</th>
+              <th>最大值</th>
+              <th>理论极值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>耐<span>久</span>度</td>
+              <td class="attr-rocket-durability2"></td>
+              <td class="attr-rocket-durability1"></td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>燃<span>料</span>箱</td>
+              <td class="attr-rocket-fuel2"></td>
+              <td class="attr-rocket-fuel1"></td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>推<span>进</span>力</td>
+              <td class="attr-rocket-power"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>制<span>动</span>力</td>
+              <td class="attr-rocket-braking"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>燃料转换</td>
+              <td class="attr-rocket-cost"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      </div>
-      <!--
-      <div class="package">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    -->
     </div>
     <div class="below">
       <div>仓库</div>

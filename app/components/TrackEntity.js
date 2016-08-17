@@ -1,38 +1,39 @@
 module.exports = (function () {
-  var MyRobot;
-  var screenWidth;
   var trackOffsetX = 0;  //地图滚动的距离
   var maxOffsetX;
-  var tracks;
-  var _scale;
   var $map;
   var $tracks;
 
   return {
-    init: function (_distance, _tracks, Robot, scale) {
-      _scale = scale;
-
-      var trackHeight = 180 / _tracks;
-
-      MyRobot = Robot;
-      maxOffsetX = _distance - window.innerWidth / scale;
-      tracks = _tracks;
+    /**
+     * @param {number} distance - 轨道距离
+     * @param {number} tracks - 轨道数量
+     * @param {number} scale - 缩放系数
+     */
+    init: function (distance, tracks, scale) {
+      trackOffsetX = 0;
+      maxOffsetX = distance - window.innerWidth / scale;
 
       $map    = $('#track');
       $tracks = $('.tracks');
 
-      $map.width(_distance).addClass('track-' + tracks);
-      $tracks.width(_distance);
+      $map.width(distance)
+          .addClass('track-' + tracks)
+          .css("transform", "translateX(" + trackOffsetX + "px)");
+
+      $tracks.empty()
+             .width(distance)
+             .css("transform", "translateX(" + trackOffsetX + "px)");
 
       for (var i=0; i<tracks; i++) {
-         $tracks.append('<div class="track" style="height:' + trackHeight + 'px"></div>');
+         $tracks.append('<div class="track" style="height:' + (180 / tracks) + 'px"></div>');
       }
     },
     update: function (myRollOffsetX, speed) {
       if (Math.abs(myRollOffsetX) < 73 || Math.abs(trackOffsetX) === maxOffsetX) {
         /* 屏幕不动 */
       } else {
-        trackOffsetX -= speed / 60;
+        trackOffsetX -= speed / window.cfg.FRAMES;
 
         if (trackOffsetX < 0 - maxOffsetX) {
           trackOffsetX = 0 - maxOffsetX;

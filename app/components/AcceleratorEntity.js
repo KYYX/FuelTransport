@@ -1,6 +1,6 @@
 module.exports = (function () {
   var MyRobot;
-  var acceleratorNode;
+  var acceleratorNode = document.querySelector("#accelerator");
   var deepOfAccelerator = 50; //油门深度
   var maxDeep  = deepOfAccelerator * 2;
   var zeroDeep = maxDeep / 2;
@@ -50,15 +50,14 @@ module.exports = (function () {
     }
   };
 
+  acceleratorNode.addEventListener('touchstart', touchstart);
+  acceleratorNode.addEventListener('touchend',   touchend);
+  acceleratorNode.addEventListener('touchmove',  touchmove);
+
   return {
     init: function (Robot) {
       MyRobot = Robot;
-
-      acceleratorNode = document.querySelector("#accelerator");
-
-      acceleratorNode.addEventListener('touchstart', touchstart);
-      acceleratorNode.addEventListener('touchend',   touchend);
-      acceleratorNode.addEventListener('touchmove',  touchmove);
+      acceleratorNode.style.left = "50px";
     }
   };
 })()

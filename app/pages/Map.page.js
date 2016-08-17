@@ -2,6 +2,19 @@ var PAGE_ID = "#page-map";
 var Plugins = {};
 var distance;
 
+var $page = $(PAGE_ID);
+var $forward = $page.find(".forward");
+var $ul = $page.find("ul");
+
+var setPosition = function (position) {
+  var _points = position.split(",");
+
+  _points.forEach(function (point, index) {
+    $(PAGE_ID + " .attr-position-src-"  + (index + 1)).html(point);
+    $(PAGE_ID + " .attr-position-dest-" + (index + 1)).html(point);
+  });
+}
+
 var getPosition = function (points) {
   var position = 0;
 
@@ -13,10 +26,6 @@ var getPosition = function (points) {
 
   return position;
 };
-
-var $page = $(PAGE_ID);
-var $forward = $page.find(".forward");
-var $ul = $page.find("ul");
 
 $page.find(".dest").tap(function () {
   $page.find(".dest.focus").removeClass("focus");
@@ -55,14 +64,6 @@ $page.tap(function () {
   $ul.addClass("disabled");
 });
 
-// $page.find(".button").tap(function () {
-//   if ($(this).hasClass("disabled")) {
-//
-//   } else {
-//     $page.removeClass("show ready");
-//   }
-// });
-
 //前进
 $forward.tap(function () {
   if ($(this).hasClass("disabled")) {
@@ -78,15 +79,17 @@ $page.find(".back").tap(function () {
 });
 
 module.exports = {
-    init: function () {
-        $forward.addClass("disabled");
-        $page.addClass("show");
+  init: function () {
+    setPosition(KIM.position);
 
-        setTimeout(function () {
-            $page.addClass("ready");
-        }, 100);
-    },
-    addPlugin: function (key, plugin) {
-      Plugins[key] = plugin;
-    }
+    $forward.addClass("disabled");
+    $page.addClass("show");
+
+    setTimeout(function () {
+      $page.addClass("ready");
+    }, 100);
+  },
+  addPlugin: function (key, plugin) {
+    Plugins[key] = plugin;
+  }
 };

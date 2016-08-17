@@ -10,23 +10,31 @@
     <script src="./libs/zepto.touch.js"></script>
     <script src="./libs/zepto.fx.js"></script>
     <script src="./libs/zepto.fx_methods.js"></script>
-    <script src="./configs/robotCfg.js"></script>
-    <script src="./configs/trackCfg.js"></script>
-    <!-- <script src="./configs/rockCfg.js"></script> -->
+    <script src="./configs/const.js"></script>
   </head>
   <body>
+    <div id="if-portrait">请将屏幕横置</div>
     <div class="container">
+<div id="page-create" class="page">
+  <div>
+    <p>请输入你的 !Rocket 名称</p>
+    <input placeholder="最长8个字符（中文=2个字符）" type="text" />
+  </div>
+
+  <i class="page-button right disabled">开始</i>
+</div>
 
 <!-- 首页 -->
-<div id="main" class="page show ready">
+<div id="main" class="page">
   <div>
     <div class="above">
       <div>商店</div>
       <div>拍卖场</div>
       <div>委托屋</div>
-      <div>加油站</div>
-      <div>修理厂</div>
+      <!-- <div>加油站</div>
+      <div>修理厂</div> -->
       <div>情报站</div>
+      <div data-location="test">测试场</div>
     </div>
     <div class="between">
       <div class="prototype-list">
@@ -38,63 +46,58 @@
           </div>
           <span>1118</span>
         </div> -->
-        <p>
-          <span class="attr-rocket-name"></span> &bull;
-          <span class="attr-rocket-level"></span>级 &bull;
-          <span class="attr-rocket-model"></span>型
-        </p>
-        <div class="prototype">
-          <span>耐<span>久</span>度</span>
-          <div class="status">
-            <span class="attr-rocket-durability2"></span>
-          </div>
+        <div>
+          <span>名称</span>
+          <span class="attr-rocket-name"></span>
+          <span>等级</span>
+          <span class="attr-rocket-level"></span>
+          <span>型号</span>
+          <span class="attr-rocket-model"></span>
         </div>
-        <div class="prototype">
-          <span>能<span>源</span>箱</span>
-          <div class="status">
-            <span class="attr-rocket-fuel2"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>推<span>进</span>力</span>
-          <div class="status">
-            <span class="attr-rocket-power"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>制<span>动</span>力</span>
-          <div class="status">
-            <span class="attr-rocket-braking"></span>
-          </div>
-        </div>
-        <div class="prototype">
-          <span>能源转换</span>
-          <div class="status">
-            <span class="attr-rocket-cost"></span>
-          </div>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>属性</th>
+              <th>当前值</th>
+              <th>最大值</th>
+              <th>理论极值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>耐<span>久</span>度</td>
+              <td class="attr-rocket-durability2"></td>
+              <td class="attr-rocket-durability1"></td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>燃<span>料</span>箱</td>
+              <td class="attr-rocket-fuel2"></td>
+              <td class="attr-rocket-fuel1"></td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>推<span>进</span>力</td>
+              <td class="attr-rocket-power"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>制<span>动</span>力</td>
+              <td class="attr-rocket-braking"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>燃料转换</td>
+              <td class="attr-rocket-cost"></td>
+              <td>-</td>
+              <td>&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      </div>
-      <!--
-      <div class="package">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    -->
     </div>
     <div class="below">
       <div>仓库</div>
@@ -113,7 +116,6 @@
       <div>
         <div class="src attr-position-src-1"></div>
         <div class="src attr-position-src-2"></div>
-        <span>.</span>
         <div class="src attr-position-src-3"></div>
         <div class="src attr-position-src-4"></div>
       </div>
@@ -123,7 +125,6 @@
       <div>
         <div class="dest attr-position-dest-1"></div>
         <div class="dest attr-position-dest-2"></div>
-        <span>.</span>
         <div class="dest attr-position-dest-3"></div>
         <div class="dest attr-position-dest-4"></div>
       </div>
@@ -148,6 +149,7 @@
 
 <!-- 比赛页面 -->
 <div id="game" class="page">
+  <!-- <div class="monitor"></div> -->
   <div>
     <div class="status">
       <div id="time">0.00</div>
@@ -210,16 +212,77 @@
   <div class="cover crashed">
     <div>
       <div>
-        <div class="content">...</div>
-        <div class="option first">损失惨重，自认倒霉</div>
-        <div class="option last">Call保险，坐等理赔</div>
+        <div class="content">虽然你是老司机，但你开车也得留个神啊...</div>
+        <div class="option">SOS，这次得去修理厂报道了</div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- 比赛页面 -->
+<div id="page-test" class="page">
+  <!-- <div class="monitor"></div> -->
+  <div>
+    <div class="status">
+      <div id="time">0.00</div>
+      <div class="distance"></div>
+      <div id="friction">空间力：1000</div>
+      <div id="">核能辐射：10</div>
     </div>
 
+    <div class="scene">
+      <div class="scale">
+        <div class="scroll" id="track">
+          <div class="safe-zone start"></div>
+          <div class="safe-zone finish"></div>
+          <!-- <div class="rocks"></div> -->
+        </div>
+        <div class="tracks"></div>
+      </div>
+    </div>
+
+    <div class="control">
+      <div id="items"></div>
+
+      <div id="dashboard">
+        <div id="fuelboard" class="board left">1000</div>
+        <div id="hp">
+          <div></div>
+        </div>
+        <div id="speedboard" class="board right">200</div>
+      </div>
+
+      <div id="speed-ctrl">
+        <span>减速</span>
+        <div class="axis">
+          <div id="accelerator" class="accelerator"></div>
+        </div>
+        <span>加速</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover exhausted">
+    <div>
+      <div>
+        <div class="content">亲，燃料木有了，你准备怎么办呢？</div>
+        <div class="option first">请系统免费把我拖回始发地吧 （5）</div>
+        <div class="option last">喂，保险公司嘛，我是你们的VIP呀，赶紧来送油</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover arrived">
+    <div>
+      <div>
+        <div class="content">安全抵达，老司机名不虚传。</div>
+        <div class="option">进入星球</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+    <script src="cordova.js"></script>
     <script src="./build.js"></script>
   </body>
 </html>
