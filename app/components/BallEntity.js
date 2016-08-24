@@ -1,32 +1,44 @@
-var createBallNode = function (color, size) {
-  var wrap  = document.createElement('div');
-  var inner = document.createElement('div');
+function BallEntity () {
+  var node = this.node = document.createElement('div');
 
-   wrap.className = "rocket-wrap";
-  inner.className = "rocket size" + size;
-  inner.style.backgroundColor = color;
+  node.className = "rocket";
 
-  wrap.appendChild(inner);
+  this.track = 2;
+  this.changeTrack();
 
-  return wrap;
-};
-
-function BallEntity (color, size, offsetX, offsetY) {
-  var node = this.node = createBallNode(color, size);
-
-  this.setOffsetX(offsetX);
-  this.setOffsetY(offsetY);
-
-  document.querySelector('.scroll').appendChild(node);
+  document.querySelector('#game .map').appendChild(node);
 }
 
-BallEntity.prototype.setOffsetY = function (offsetY) {
-  this.translateY = offsetY;
-  this.node.style.top = offsetY + "px";
+BallEntity.prototype.changeTrack = function () {
+  var track = this.track;
+  this.node.style.top = (5 + (track - 1) + 48 * (track - 1)) + "px";
 };
 
-BallEntity.prototype.setOffsetX = function (offsetX) {
-  this.translateX = offsetX;
+BallEntity.prototype.up = function (offsetY) {
+  this.track -= 1;
+
+  if (this.track === 0) {
+    this.track = 1;
+  }
+
+  this.changeTrack();
+
+  return this.track;
+};
+
+BallEntity.prototype.down = function (offsetX) {
+  this.track += 1;
+
+  if (this.track === 4) {
+    this.track = 3;
+  }
+
+  this.changeTrack();
+
+  return this.track;
+};
+
+BallEntity.prototype.move = function (offsetX) {
   this.node.style.transform = "translateX(" + offsetX + "px)";
 };
 

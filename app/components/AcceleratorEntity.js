@@ -1,9 +1,9 @@
 module.exports = (function () {
   var MyRobot;
   var acceleratorNode = document.querySelector("#accelerator");
-  var deepOfAccelerator = 50; //油门深度
-  var maxDeep  = deepOfAccelerator * 2;
-  var zeroDeep = maxDeep / 2;
+  var deepOfAccelerator; //油门深度
+  // var maxDeep  = deepOfAccelerator * 2;
+  // var zeroDeep = maxDeep / 2;
   var speedCtrlSwitch = "off";
   var currentPos = 0; //油门的位置的页面定位
 
@@ -36,17 +36,17 @@ module.exports = (function () {
 
       currentPos = clientX;
 
-      var _deepOfAccelerator = (deepOfAccelerator - zeroDeep) / zeroDeep;
+      // var _deepOfAccelerator = (deepOfAccelerator - zeroDeep) / zeroDeep;
+      //
+      // if (_deepOfAccelerator > 0) {
+      //     power = MyRobot.config.PF * _deepOfAccelerator;
+      // } else if (_deepOfAccelerator < 0) {
+      //     power = MyRobot.config.BF * _deepOfAccelerator;
+      // } else {
+      //     power = 0;
+      // }
 
-      if (_deepOfAccelerator > 0) {
-          power = MyRobot.config.power * _deepOfAccelerator;
-      } else if (_deepOfAccelerator < 0) {
-          power = MyRobot.config.braking * _deepOfAccelerator;
-      } else {
-          power = 0;
-      }
-
-      MyRobot.setPower(power);
+      MyRobot.setPower(deepOfAccelerator / 100);
     }
   };
 
@@ -57,7 +57,8 @@ module.exports = (function () {
   return {
     init: function (Robot) {
       MyRobot = Robot;
-      acceleratorNode.style.left = "50px";
+      deepOfAccelerator = 0;
+      acceleratorNode.style.left = deepOfAccelerator + "px";
     }
   };
 })()

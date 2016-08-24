@@ -5,6 +5,8 @@ var Plugins = {};
 
 var $page = $(PAGE_ID);
 
+var $items = $page.find(".items");
+
 var $arrivedDialog   = $("#game .cover.arrived");
 var $exhaustedDialog = $("#game .cover.exhausted");
 var $crashedDialog   = $("#game .cover.crashed");
@@ -52,22 +54,20 @@ $crashedDialog.find(".option").tap(function () {
 module.exports = {
     init: function (distance) {
         $page.addClass("show");
-        var sceneHeight = $(".scene").height();
-        var scale = sceneHeight / 270;
+        var sceneHeight = $("#game .map").height();
+        var scale = sceneHeight / 156;
 
         $(".scale").css({
           "transform": "scale(" + scale + ")"
         });
 
         Engine.init({
-          scale   :  scale,
-          tracks  :  4,    //赛道数量
-          distance:  distance, //赛道长度
+          scale: scale,
+          distance: distance, //赛道长度
         });
 
         setTimeout(function () {
             $page.addClass("ready");
-            // alert(window.innerWidth);
             setTimeout(function () {
               Engine.start();
             }, 1000);

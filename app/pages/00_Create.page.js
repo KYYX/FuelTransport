@@ -31,15 +31,40 @@ $button.tap(function () {
       position: "0,0,0,0",
       rocket: {
         name: _name,
-        level: 1,
+        level: "D",
         weight: 100,
-        durability1: 1000,  //最大耐久
-        durability2: 1000,  //当前耐久
-        power:   1000,
-        braking: 1000,
-        fuel1: 10000,  //最大能源
-        fuel2: 10000,  //当前能源
-        cost:  1
+        PF: 0,
+        BF: 0,
+        HP: 0,
+        MaxHP: 0,
+        MP: 0,
+        MaxMP: 0,
+        equipment: [{
+          type: 1,
+          weight: 10,
+          name: "正向推进器",
+          power: 1000,
+          cost: 1
+        },{
+          type: 2,
+          weight: 10,
+          name: "逆向制动器",
+          power: 1000,
+          cost: 1
+        },{
+          type: 3,
+          weight: 10,
+          name: "能量罩",
+          MaxHP: 10000,
+          HP: 10000
+
+        },{
+          type: 4,
+          weight: 10,
+          name: "燃料舱",
+          MaxMP: 10000,
+          MP: 10000
+        }]
       }
     };
 

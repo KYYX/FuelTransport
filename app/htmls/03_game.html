@@ -3,42 +3,57 @@
   <!-- <div class="monitor"></div> -->
   <div>
     <div class="status">
-      <div id="time">0.00</div>
       <div class="distance"></div>
+      <!-- <div id="time">0.00</div>
       <div id="friction">空间力：1000</div>
-      <div id="">核能辐射：10</div>
+      <div id="">核能辐射：10</div> -->
     </div>
 
-    <div class="scene">
+    <div class="map">
+      <div class="tracks">
+        <div class="boundary"></div>
+        <div class="track"></div>
+        <div class="division"></div>
+        <div class="track"></div>
+        <div class="division"></div>
+        <div class="track"></div>
+        <div class="boundary"></div>
+      </div>
+    </div>
+
+    <!-- <div class="scene">
       <div class="scale">
         <div class="scroll" id="track">
           <div class="safe-zone start"></div>
           <div class="safe-zone finish"></div>
-          <!-- <div class="rocks"></div> -->
+          <!-- <div class="rocks"></div>
         </div>
         <div class="tracks"></div>
       </div>
-    </div>
+    </div> -->
 
     <div class="control">
-      <div id="items"></div>
+      <div>
+        <div id="items" class="items"></div>
 
-      <div id="dashboard">
-        <div id="fuelboard" class="board left">1000</div>
-        <div id="hp">
-          <div></div>
+        <div id="dashboard">
+          <div class="button up">上移</div>
+          <div id="fuelboard"  class="board shield">1000</div>
+          <div id="speedboard" class="board speed">200</div>
+          <div id="hp"><div></div></div>
+          <div class="button down">下移</div>
         </div>
-        <div id="speedboard" class="board right">200</div>
-      </div>
 
-      <div id="speed-ctrl">
-        <span>减速</span>
-        <div class="axis">
-          <div id="accelerator" class="accelerator"></div>
-        </div>
-        <span>加速</span>
+        <!-- <div id="speed-ctrl">
+          <span>减速</span>
+          <div class="axis">
+            <div id="accelerator" class="accelerator"></div>
+          </div>
+          <span>加速</span>
+        </div> -->
       </div>
     </div>
+
   </div>
 
   <div class="cover exhausted">

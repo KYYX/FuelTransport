@@ -1,40 +1,19 @@
 import Ball from './BallEntity';
 
-// const SIZE = [0, 16, 22.6, 27,7, 32, 35.8];
-// const HURT = [0, 5, 4, 3, 2];
-
 function RobotEntity (config) {
   this.status = "normal";
 
   this.config = config;
-  this.power  = 0; //当前动力
-  this.speed  = 0;
+  this.distance = 0;
+  this.power = 0; //当前动力
+  this.speed = 0; //当前速度
+  this.cost  = 0; //当前油耗
+  this.track = 2; //当前轨道
 
-  this.translateX = config.x;
-  this.translateY = config.y;
-
-  this.tracks = config.tracks; //车道总数
-  this.height = 180 / this.tracks;
-  this.width  = 24; //SIZE[config.level];
-  // this.level  = config.level;
-  // this.durability = config.durability2;
-
-  this.Ball = new Ball(config.color, config.level, config.x, this.calcOffsetY());
+  this.Ball = new Ball();
 }
 
-/* 计算Y轴偏移量 */
-RobotEntity.prototype.calcOffsetY = function () {
-  return 45 + this.translateY * this.height;
-};
-
-/* 设置加速度和当前最大速度 */
-RobotEntity.prototype.setPower = function (power) {
-  this.power = power;
-};
-
-RobotEntity.prototype.brake = function (power) {
-  this.power = 0 - power;
-}
+RobotEntity.prototype.type = "Rocket";
 
 RobotEntity.prototype.get = function (attr) {
     return this[attr];
@@ -44,81 +23,73 @@ RobotEntity.prototype.set = function (attr, value) {
   this[attr] = value;
 };
 
+RobotEntity.prototype.changePower = function (power, cost) {
+  this.power += power;
+  this.cost  += cost;
+};
+
 RobotEntity.prototype.getPosition = function () {
   return {
-    x: this.translateX,
-    y: this.translateY
+    x: this.distance,
+    y: this.track
   }
 };
 
 RobotEntity.prototype.collide = function (rock) {
-  // var durability2 = this.config.durability2;
-  var  rockWeight = rock.weight;
-  var   rockSpeed = rock.speed;
-
-  // var thisSize  = this.level;
-  var thisSpeed = this.speed;
-
-  var damage = Math.sqrt(rockWeight * Math.abs(thisSpeed - rockSpeed));
-
-  // if (rockSpeed * thisSpeed > 0) {
-  //   damage = Math.abs(thisSize * Math.abs(thisSpeed) - rockSize * Math.abs(rockSpeed));
-  // } else {
-  //   damage = Math.abs(thisSize * thisSpeed - rockSize * rockSpeed);
-  // }
-  //
-  // thisSpeed -= damage / (thisSize + rockSize); //damage / thisSize;
+  var rockWeight = rock.weight;
+  // var  rockSpeed = rock.speed;
+  var  thisSpeed = this.speed;
+  // var      damage = Math.sqrt(rockWeight * Math.abs(thisSpeed - rockSpeed));
+  var damage = rockWeight * thisSpeed;
 
   rock.disappear();
 
-  this.config.durability2 -= damage;
-  this.speed = thisSpeed / 2;
+  this.config.HP -= damage;
+  // this.speed = thisSpeed / 2;
 
-  var MaxShield = this.config.durability1;
-  var CurShield = this.config.durability2;
+  var MaxShield = this.config.MaxHP;
+  var CurShield = this.config.HP;
+
   $("#hp > div").height((MaxShield - CurShield) / MaxShield * 100 + "%");
 
   // console.log("剩余耐久：" + Math.round(this.durability));
 
-  if (this.durability <= 0) {
+  if (this.config.HP <= 0) {
+    this.config.HP = 0;
     this.status = "crash";
   }
 };
 
 /* 变道 */
-RobotEntity.prototype.setTranslateY = function (offset) {
-  this.translateY += offset;
+RobotEntity.prototype.up = function () {
+   this.track = this.Ball.up();
+};
 
-  if (this.translateY < 0) {
-    this.translateY = 0;
-  } else if (this.translateY > this.tracks - 1) {
-    this.translateY = this.tracks - 1;
-  } else { /* 正常变道 */ }
-
-  this.Ball.setOffsetY(this.calcOffsetY());
+RobotEntity.prototype.down = function () {
+   this.track = this.Ball.down();
 };
 
 /* 前进 */
 RobotEntity.prototype.update = function (friction) {
-  // if (this.status === "empty") {
-  //   this.power = 0;
-  // }
-
   var a = (this.power + friction) / this.config.weight;
 
   this.speed += a / window.cfg.FRAMES;
 
-  this.translateX   += this.speed / window.cfg.FRAMES;
-  this.config.fuel2 -= this.power / 1000 * 100 / this.config.cost / window.cfg.FRAMES;
+  this.distance += this.speed / window.cfg.FRAMES;
 
-  if (this.translateX < 0) {
-    this.translateX = 0;
+  if (this.cost > 0) {
+    this.config.MP  -= this.power / 1000 * 100 / this.cost / window.cfg.FRAMES;
   }
 
-  this.Ball.setOffsetX(this.translateX);
+  if (this.distance < 0) {
+    this.distance = 0;
+  }
 
-  if (this.config.fuel2 <= 0) {
-    this.config.fuel2 = 0;
+  this.Ball.move(this.distance);
+
+  if (this.config.MP <= 0) {
+    this.config.MP = 0;
+    this.status = "empty";
   }
 };
 

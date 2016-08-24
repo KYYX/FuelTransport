@@ -20,6 +20,28 @@
     margin: 16px 0;
   }
 
+  .src-container, .dest-container {
+    position: relative;
+  }
+
+  .src-container:before {
+    content: "始发地";
+    position: absolute;
+    top: 0;
+    left: -64px;
+    font-size: 16px;
+    line-height: 32px;
+  }
+
+  .dest-container:before {
+    content: "目的地";
+    position: absolute;
+    top: 0;
+    left: -64px;
+    font-size: 16px;
+    line-height: 32px;
+  }
+
   .src, .dest {
     display: inline-block;
     width: 32px;
@@ -54,17 +76,17 @@
 
   ul {
     position: absolute;
-    left: 50%;
+    left: 0;
     bottom: 32px;
-    width: 480px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     height: 32px;
+    padding: 0 72px;
     list-style-type: none;
-    transform: translateX(-50%);
 
     & > li {
-      float: left;
       width: 32px;
-      margin: 0 8px;
       border: 1px solid #aaa;
       border-radius: 2px;
       text-align: center;

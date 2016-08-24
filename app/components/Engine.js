@@ -1,11 +1,10 @@
-import Accelerator from './AcceleratorEntity.js';
-import       Track from './TrackEntity.js';
-import       Robot from './RobotEntity.js';
-import        Rock from './RockEntity.js';
+// import Accelerator from './AcceleratorEntity.js';
+import Track from './TrackEntity.js';
+import Robot from './RobotEntity.js';
+import  Rock from './RockEntity.js';
 
 var STATUS  = "NORMAL";
 var SCALE   = 1;
-var UPDATED = true;
 
 var RANDOM = function (min, max) {
   return Math.round(Math.random() * (max - min)) + min;
@@ -19,6 +18,9 @@ var $distanceStatus  = $("#game .status > .distance");
 var $timeStatus = $("#time");
 var $fuelboard  = $("#fuelboard");
 var $speedboard = $("#speedboard");
+var $items = $("#game .items");
+var $upBtn = $("#game .button.up");
+var $downBtn = $("#game .button.down");
 
 var workerTimeout; //监控worker;
 var workerJS = `
@@ -37,24 +39,66 @@ var screenWidth = window.innerWidth;
 var paused = false;
 var startTime = -1;
 var lastTime = 0;
-var countDownInterval = -1; //倒计时
 
-var robots  = [];
-var rocks   = [[],[],[],[],[]];
+var commandObj = {
+  up: function () {
+    MyRobot.up();
+  },
+  down: function () {
+    MyRobot.down();
+  }
+};
+var commandList = [];
+// var robots  = [];
+// var rocks   = [[],[],[],[],[]];
+var objectInTracks = [[], [], []]
 var MyRobot ;
-var tracks  ; //= TrackCfg.tracks; //赛道数量
+// var tracks  ; //= TrackCfg.tracks; //赛道数量
 var distance; //= TrackCfg.distance; //赛道长度
 var friction = 0; //= TrackCfg.friction; //轨道摩擦力
+
+//设置装备栏目
+var setEquipment = function (equipments) {
+  $items.empty();
+
+  for (var i=0; i<10; i++) {
+    if (equipments[i]) {
+      (function (equipment, $div) {
+        var $div = $("<div><div></div><p>" + equipment.name + "</p></div>")
+        $items.append($div);
+
+        if (equipment.type === 1 || equipment.type === 2) {
+          $div.singleTap(function () {
+            $div.toggleClass("active");
+
+            if ($div.hasClass("active")) {
+              MyRobot.changePower(equipment.power, equipment.cost);
+            } else {
+              MyRobot.changePower(0 - equipment.power, 0 - equipment.cost);
+            }
+          });
+        }
+
+        if (equipment.effect) {
+          $div.doubleTap(function () {
+            console.log("Trigger skill");
+          });
+        }
+      })(equipments[i]);
+    } else {
+      var $div = $("<div class='disabled'><div></div><p></p></div>");
+      $items.append($div);
+    }
+  }
+};
 
 //创建陨石
 var createRock = function (track, lastX) {
   var rock = new Rock({
-    width   : 24, //陨石宽
-    height  : 45, //轨道高
-    track   : track + 1,
-    weight  : RANDOM(1,50),
-    speed   : 0 - RANDOM(0,200),
-    distance: lastX//screenWidth / SCALE - 24,
+    track: track,
+    // weight  : RANDOM(1,50),
+    speed: 0,
+    distance: lastX
   });
 
   rock.render();
@@ -62,58 +106,41 @@ var createRock = function (track, lastX) {
   return rock;
 };
 
-//倒计时
-var countDown = function (time, message, callback) {
-  var countDown = time;
-
-  console.log(countDown);
-
-  countDownInterval = setInterval(function () {
-      countDown -= 1;
-      console.log(countDown);
-
-      if (countDown === 0) {
-        clearInterval(countDownInterval);
-        countDownInterval = -1;
-        console.log(message);
-        callback();
-      }
-  }, 1000);
-
-  return countDownInterval;
-};
-
 //过滤掉不需要update的对象，设置不在屏幕内的rock为display
 var filterRockAndRocket = function () {
-  var rocketDistance = MyRobot.get("translateX");
+  // var rocketDistance = MyRobot.get("translateX");
+  //
+  // robots = robots.filter(function (robot) {
+  //   if (robot.get("translateX") < distance) {
+  //     return true;
+  //   } else {
+  //     robot.set("status", "arrived");
+  //     return false;
+  //   }
+  // });
 
-  robots = robots.filter(function (robot) {
-    if (robot.get("translateX") < distance) {
-      return true;
-    } else {
-      robot.set("status", "arrived");
-      return false;
-    }
-  });
-
-  for (var i=0; i<rocks.length; i++) {
-    rocks[i] = rocks[i].filter(function (rock) {
-      if (rock.status === "disappear" || rock.distance < 0) {
-        return false;
-      } else {
-        return true;
-      }
+  for (var i=0; i<objectInTracks.length; i++) {
+    objectInTracks[i] = objectInTracks[i].filter(function (obj) {
+      return obj.status === "disappear" || obj.distance < 0 ? false : true;
     });
+
+    objectInTracks[i].sort(function (obj1, obj2) {
+      return obj1.distance - obj2.distance
+    });
+  }
+
+  if (MyRobot.distance >= distance) {
+    MyRobot.status = "arrived";
   }
 };
 
 //碰撞检测
 var collisionDetection = function () {
-  var rocketWidth    = MyRobot.get("width");
-  var rocketDistance = MyRobot.get("translateX");
-  var rocketTrack    = MyRobot.get("translateY");
-  var len = rocks.length
-
+  // var rocketWidth    = MyRobot.get("width");
+  // var rocketDistance = MyRobot.get("translateX");
+  // var rocketTrack    = MyRobot.track;
+  // var len = rocks.length;
+  /** 陨石间的碰撞
   for (var i=0; i<len; i++) {
     var rocksForTrack = rocks[i];
 
@@ -135,7 +162,6 @@ var collisionDetection = function () {
         var    speedK = rockK.get("speed");
 
         if (rockK.status === "disappear" || Math.abs(distanceJ - distanceK) >= 10) {
-            /* 陨石不存在，或者没有相撞 */
             continue;
         } else {
           rockJ.disappear();
@@ -157,23 +183,49 @@ var collisionDetection = function () {
       }
     }
   }
+  */
+  var myDistance = MyRobot.distance;
 
-  if (rocketDistance < distance - 50) {
-    var rocksForTrack = rocks[rocketTrack];
+  if (myDistance < distance - 50) {
+    // var rocksForTrack = rocks[rocketTrack];
+    //
+    // for (var i=0; i<rocksForTrack.length; i++) {
+    //   var rock = rocksForTrack[i];
+    //
+    //   if (rock.status === "disappear") {
+    //     continue;
+    //   }
+    //
+    //   var rockWidth    = rock.get("width");
+    //   var rockDistance = rock.get("distance");
+    //
+    //   if (Math.abs(rockDistance - rocketDistance) < 32) {
+    //     MyRobot.collide(rock);
+    //   }
+    // }
+    var rock1, rock2;
+    var myTrack = MyRobot.track - 1;
+    // var myIndex = MyRobot.index;
+    var objects = objectInTracks[myTrack];
 
-    for (var i=0; i<rocksForTrack.length; i++) {
-      var rock = rocksForTrack[i];
-
-      if (rock.status === "disappear") {
-        continue;
+    for (var i=0; i<objects.length; i++) {
+      if (i > 0) {
+        rock1 = objects[i-1];
       }
 
-      var rockWidth    = rock.get("width");
-      var rockDistance = rock.get("distance");
+      rock2 = objects[i+1];
 
-      if (Math.abs(rockDistance - rocketDistance) < (rockWidth + rocketWidth) / 2) {
-        MyRobot.collide(rock);
+      if (objects[i] === MyRobot) {
+        break;
       }
+    }
+
+    if (rock1 && Math.abs(myDistance - rock1.distance) < 30) {
+      MyRobot.collide(rock1);
+    }
+
+    if (rock2 && Math.abs(myDistance - rock2.distance) < 30) {
+      MyRobot.collide(rock2);
     }
   } else {
     /* 进入终点安全区，不进行碰撞检测 */
@@ -184,36 +236,32 @@ var collisionDetection = function () {
 var setStatusBar = function (robot) {
   var config = robot.config;
 
-  if (tick % 2 === 0) {
-    if (startTime > -1) {
-      var  costTime = new Date() - startTime;
-      if (costTime < 10) {
-        costTime = "000" + costTime;
-      } else if (costTime < 100) {
-        costTime = "00" + costTime;
-      } else if (costTime < 1000) {
-        costTime = "0" + costTime;
-      } else {
-        costTime = "" + costTime;
-      }
+  if (tick % 6 === 0) {
+    // if (startTime > -1) {
+    //   var  costTime = new Date() - startTime;
+    //   if (costTime < 10) {
+    //     costTime = "000" + costTime;
+    //   } else if (costTime < 100) {
+    //     costTime = "00" + costTime;
+    //   } else if (costTime < 1000) {
+    //     costTime = "0" + costTime;
+    //   } else {
+    //     costTime = "" + costTime;
+    //   }
+    //
+    //   var       len = costTime.length;
+    //   var frontHalf = costTime.substring(0, len-3);
+    //   var  backHalf = costTime.substring(len-3, len-1);
+    //
+    //   $timeStatus.html(frontHalf + "." + backHalf);
+    // }
 
-      var       len = costTime.length;
-      var frontHalf = costTime.substring(0, len-3);
-      var  backHalf = costTime.substring(len-3, len-1);
+    $distanceStatus.html("剩余距离：" + Math.round(distance - robot.distance));
 
-      $timeStatus.html(frontHalf + "." + backHalf);
-    }
-
-    $distanceStatus.html(Math.round(distance - robot.translateX));
-
-    $fuelboard.html(Math.round(config.fuel2));
+    $fuelboard.html(Math.round(config.MP));
   }
 
   $speedboard.html(Math.round(robot.speed));
-
-  if (config.fuel2 === 0) {
-    robot.set("status", "empty");
-  }
 };
 
 //更新对象状态
@@ -222,20 +270,26 @@ var _update = function (event) {
 
   // window.cfg.FRAMES = Math.round(1000 / (event.data - lastTime));
 
-  lastTime = +new Date();//event.data;
+  lastTime = +new Date(); //event.data;
 
   clearTimeout(workerTimeout);
 
-  //更新火舰状态
-  robots.forEach(function (robot) {
-    var _friction = robot.get("translateX") < 50 ? 0 : friction;
-    robot.get("status") !== "crash" && robot.update(_friction);
-  });
+  if (commandList.length > 0) {
+    var command = commandList.shift();
+    commandObj[command]();
+  }
 
-  //更新岩石状态
-  rocks.forEach(function (rocksForTrack) {
-    rocksForTrack.forEach(function (rock) {
-      rock.status === "active" && rock.update(friction);
+  //更新火舰状态
+  // robots.forEach(function (robot) {
+  //   var _friction = robot.get("translateX") < 50 ? 0 : friction;
+  //   robot.get("status") !== "crash" && robot.update(_friction);
+  // });
+  MyRobot.update(friction);
+
+  // 更新d对象状态 ~ update()
+  objectInTracks.forEach(function (oneTrack) {
+    oneTrack.forEach(function (object) {
+      object !== MyRobot && object.update(friction);
     });
   });
 
@@ -245,22 +299,21 @@ var _update = function (event) {
   //过滤
   filterRockAndRocket();
 
-  var rocketDistance = MyRobot.get("translateX");
-
   //渲染能看到的陨石
-  $(".scroll .rock").remove();
+  // $(".scroll .rock").remove();
+  //
+  // for (var i=0; i<rocks.length; i++) {
+  //   rocks[i].forEach(function (rock) {
+  //     var rockDistance = rock.get("distance");
+  //
+  //     if (Math.abs(rocketDistance - rockDistance) <= screenWidth / SCALE) {
+  //       rock.invoke();
+  //       rock.render();
+  //     }
+  //   });
+  // }
 
-  for (var i=0; i<rocks.length; i++) {
-    rocks[i].forEach(function (rock) {
-      var rockDistance = rock.get("distance");
-
-      if (Math.abs(rocketDistance - rockDistance) <= screenWidth / SCALE) {
-        rock.invoke();
-        rock.render();
-      }
-    });
-  }
-
+  //更新状态
   setStatusBar(MyRobot);
 
   if (MyRobot.get("status") === "crash") {
@@ -277,7 +330,7 @@ var _update = function (event) {
     setTimeout(function () { $exhaustedDialog.fadeIn(50); }, 10);
   } else {
     //更新赛道
-    Track.update(MyRobot.translateX, MyRobot.speed);
+    Track.update(MyRobot.distance, MyRobot.speed);
   }
 
   //如果不暂停，则继续主循环
@@ -292,8 +345,6 @@ var _update = function (event) {
 
     MainLoop.postMessage(time_);
   }
-
-  // UPDATED = true;
 };
 
 //结束
@@ -325,62 +376,73 @@ var _quit = function () {
   rocks  = [[],[],[],[],[]];
 };
 
-/**
- * 初始化游戏
- * 设置缩放、轨道数量、距离
- * 创建陨石群
- * 创建我的火舰
- */
 var _init = function (config, isTest) {
   SCALE    = config.scale;
-  tracks   = config.tracks;   //赛道数量
   distance = config.distance; //赛道长度
 
-  // var oneTrackRockCount = config.rockCount;
+  MyRobot = new Robot(KIM.rocket);
+
+  objectInTracks = [[MyRobot], [MyRobot], [MyRobot]];
 
   if (!isTest) {
-    for (var i=0; i<tracks; i++) {
-      var count = 0;
-      var lastX = screenWidth / SCALE - 100;//screenWidth - 100;
+    // objectInTracks.forEach(function (track, i) {
+    //   var lastX = screenWidth / SCALE;
+    //
+    //   while (lastX < distance) {
+    //     if (Math.random () < 0.5) {
+    //       track.push(createRock(i+1, lastX));
+    //     }
+    //
+    //     lastX += 96; //+= RANDOM(100, 300);
+    //   }
+    //
+    //   track.push(MyRobot);
+    // });
 
-      // while (count < oneTrackRockCount) {
+      var lastX = screenWidth / SCALE;
+
       while (lastX < distance) {
-        lastX += RANDOM(100, 300);
-        count += 1;
+        var count = 0;
 
-        rocks[i].push(createRock(i, lastX));
+        if (Math.random () < 0.5) {
+          objectInTracks[0].push(createRock(1, lastX));
+          count += 1;
+        }
+
+        if (Math.random () < 0.5) {
+          objectInTracks[1].push(createRock(2, lastX));
+          count += 1;
+        }
+
+        if (count === 0 || (Math.random () < 0.5 && count < 2)) {
+          objectInTracks[2].push(createRock(3, lastX));
+        }
+
+        lastX += 120;
       }
-    }
   }
 
-  MyRobot = new Robot($.extend(KIM.rocket, {
-    color: "#70CCF0",
-    x: 10,
-    y: 1,
-    tracks: tracks
-  }));
+  setEquipment(KIM.rocket.equipment);
 
-  robots.push(MyRobot);
-
-  Track.init(distance, tracks, SCALE);
-  Accelerator.init(MyRobot);
+  Track.init(distance, SCALE);
+  // Accelerator.init(MyRobot);
 
   setStatusBar(MyRobot);
 }
 
 var _reset = function () {
-  robots  = [];
-  rocks   = [[],[],[],[],[]];
+  objectInTracks = [[],[],[]];
   MyRobot = null;
 
-  $("#game").find(".rocket-wrap, .rock").remove();
+  $("#game").find(".rocket, .rock").remove();
 };
 
-//上下移动事件
-$(".scene").swipeUp(function () {
-  MyRobot.setTranslateY(-1);
-}).swipeDown(function () {
-  MyRobot.setTranslateY(1);
+$upBtn.tap(function () {
+  commandList.push("up");
+});
+
+$downBtn.tap(function () {
+  commandList.push("down");
 });
 
 screen.orientation.addEventListener("change", function () {

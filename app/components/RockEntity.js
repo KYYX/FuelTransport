@@ -8,14 +8,14 @@ function Rock (config) {
     size = 8;
   }
 
-  that.track    = config.track;
-  that.speed    = config.speed;
-  that.height   = config.height;
-  that.width    = config.width;
-  that.weight   = config.weight;
-  that.level    = size;
+  that.track = config.track;
+  that.speed = config.speed;
+  that.level = Math.floor(Math.random() * 4) + 1;
+  that.weight = that.level * 10;
   that.distance = config.distance;
 }
+
+Rock.prototype.type = "Rock";
 
 Rock.prototype.get = function (attr) {
   return this[attr];
@@ -26,7 +26,9 @@ Rock.prototype.set = function (attr, value) {
 };
 
 Rock.prototype.disappear = function () {
-  this.node && this.node.addClass("disappear");
+  if (this.node) {
+    this.node.className += " disappear";
+  }
   this.status = "disappear";
 };
 
@@ -64,15 +66,21 @@ Rock.prototype.update = function (friction) {
 };
 
 Rock.prototype.render = function () {
-  var style = "top:" + (45 + (this.track - 1) * this.height) + "px;"
-            + "transform:translateX(" + this.distance + "px)";
+  // var style = "top:" + (45 + (this.track - 1) * this.height) + "px;"
+  //           + "transform:translateX(" + this.distance + "px)";
+  this.node = document.createElement("div");
+  this.node.className = "rock size" + this.level;
+  this.node.style.top = (5 + (this.track - 1) + 48 * (this.track - 1)) + "px";
+  // this.node.style.transform = "translateX(" + this.distance + "px)";
+  this.node.style.left = this.distance + "px";
 
-  var node = this.node
-           = $("<div class='rock' style='" + style + "'>" +
-               " <div class='size" + this.level + "'></div>" +
-               "</div>");
+  // var node = this.node
+  //          = $("<div class='rock' style='" + style + "'>" +
+  //              " <div class='size" + this.level + "'></div>" +
+  //              "</div>");
 
-  $(".scroll").append(node);
+  // $("#game .map").append(node);
+  document.querySelector('#game .map').appendChild(this.node);
 };
 
 module.exports = Rock;

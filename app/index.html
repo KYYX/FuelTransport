@@ -38,66 +38,41 @@
     </div>
     <div class="between">
       <div class="prototype-list">
-        <!-- 进度条样式
-        <div class="prototype">
-          <span>耐<span>久</span>度</span>
-          <div class="progress">
-            <div style="width: 44%;"></div>
-          </div>
-          <span>1118</span>
-        </div> -->
         <div>
-          <span>名称</span>
+          <span>名&nbsp;&nbsp;&nbsp;称</span>
           <span class="attr-rocket-name"></span>
-          <span>等级</span>
+          <span>型&nbsp;&nbsp;&nbsp;号</span>
           <span class="attr-rocket-level"></span>
-          <span>型号</span>
-          <span class="attr-rocket-model"></span>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>属性</th>
-              <th>当前值</th>
-              <th>最大值</th>
-              <th>理论极值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>耐<span>久</span>度</td>
-              <td class="attr-rocket-durability2"></td>
-              <td class="attr-rocket-durability1"></td>
-              <td>&nbsp;</td>
-            </tr>
-            <tr>
-              <td>燃<span>料</span>箱</td>
-              <td class="attr-rocket-fuel2"></td>
-              <td class="attr-rocket-fuel1"></td>
-              <td>&nbsp;</td>
-            </tr>
-            <tr>
-              <td>推<span>进</span>力</td>
-              <td class="attr-rocket-power"></td>
-              <td>-</td>
-              <td>&nbsp;</td>
-            </tr>
-            <tr>
-              <td>制<span>动</span>力</td>
-              <td class="attr-rocket-braking"></td>
-              <td>-</td>
-              <td>&nbsp;</td>
-            </tr>
-            <tr>
-              <td>燃料转换</td>
-              <td class="attr-rocket-cost"></td>
-              <td>-</td>
-              <td>&nbsp;</td>
-            </tr>
-          </tbody>
-        </table>
+
+        <div>
+          <span>能量罩</span>
+          <span class="progress">
+            <span class="shield"></span>
+          </span>
+          <span>充&nbsp;&nbsp;&nbsp;能</span>
+        </div>
+
+        <div>
+          <span>燃&nbsp;&nbsp;&nbsp;料</span>
+          <span class="progress">
+            <span class="fuel"></span>
+          </span>
+          <span>加&nbsp;&nbsp;&nbsp;油</span>
+        </div>
+
+        <div class="equipment">
+          <div class="equipment-first"></div>
+          <div class="equipment-last" ></div>
+        </div>
       </div>
 
+      <div class="chart">
+        <p>性能分析</p>
+        <div>
+          <canvas id="main-canvas" width="195" height="195"></canvas>
+        </div>
+      </div>
     </div>
     <div class="below">
       <div>仓库</div>
@@ -110,10 +85,10 @@
 </div>
 
 <div id="page-map" class="page">
-  <p>选择目的地坐标</p>
   <div>
+    <p>选择目的地坐标</p>
     <div>
-      <div>
+      <div class="src-container">
         <div class="src attr-position-src-1"></div>
         <div class="src attr-position-src-2"></div>
         <div class="src attr-position-src-3"></div>
@@ -122,7 +97,7 @@
       <div>
         <span>&darr;</span>
       </div>
-      <div>
+      <div class="dest-container">
         <div class="dest attr-position-dest-1"></div>
         <div class="dest attr-position-dest-2"></div>
         <div class="dest attr-position-dest-3"></div>
@@ -152,42 +127,57 @@
   <!-- <div class="monitor"></div> -->
   <div>
     <div class="status">
-      <div id="time">0.00</div>
       <div class="distance"></div>
+      <!-- <div id="time">0.00</div>
       <div id="friction">空间力：1000</div>
-      <div id="">核能辐射：10</div>
+      <div id="">核能辐射：10</div> -->
     </div>
 
-    <div class="scene">
+    <div class="map">
+      <div class="tracks">
+        <div class="boundary"></div>
+        <div class="track"></div>
+        <div class="division"></div>
+        <div class="track"></div>
+        <div class="division"></div>
+        <div class="track"></div>
+        <div class="boundary"></div>
+      </div>
+    </div>
+
+    <!-- <div class="scene">
       <div class="scale">
         <div class="scroll" id="track">
           <div class="safe-zone start"></div>
           <div class="safe-zone finish"></div>
-          <!-- <div class="rocks"></div> -->
+          <!-- <div class="rocks"></div>
         </div>
         <div class="tracks"></div>
       </div>
-    </div>
+    </div> -->
 
     <div class="control">
-      <div id="items"></div>
+      <div>
+        <div id="items" class="items"></div>
 
-      <div id="dashboard">
-        <div id="fuelboard" class="board left">1000</div>
-        <div id="hp">
-          <div></div>
+        <div id="dashboard">
+          <div class="button up">上移</div>
+          <div id="fuelboard"  class="board shield">1000</div>
+          <div id="speedboard" class="board speed">200</div>
+          <div id="hp"><div></div></div>
+          <div class="button down">下移</div>
         </div>
-        <div id="speedboard" class="board right">200</div>
-      </div>
 
-      <div id="speed-ctrl">
-        <span>减速</span>
-        <div class="axis">
-          <div id="accelerator" class="accelerator"></div>
-        </div>
-        <span>加速</span>
+        <!-- <div id="speed-ctrl">
+          <span>减速</span>
+          <div class="axis">
+            <div id="accelerator" class="accelerator"></div>
+          </div>
+          <span>加速</span>
+        </div> -->
       </div>
     </div>
+
   </div>
 
   <div class="cover exhausted">
@@ -219,7 +209,7 @@
   </div>
 </div>
 
-<!-- 比赛页面 -->
+<!-- 测试场页面 -->
 <div id="page-test" class="page">
   <!-- <div class="monitor"></div> -->
   <div>

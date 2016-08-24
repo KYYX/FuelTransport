@@ -11,17 +11,87 @@
 }
 
 #game {
+  & > div {
+    background-color: #e9e9e9;
+  }
+
   .status {
     display: flex;
     height: 32px;
-    justify-content: space-around;
+    padding: 0 16px;
+    justify-content: flex-end;
     align-items: center;
     background-color: #e9e9e9;
 
     div {
-      flex: 1;
+      // flex: 1;
       color: #21bd73;
       text-align: center;
+    }
+  }
+
+  .map {
+    position: relative;
+
+    .tracks {
+      background-color: rgb(194,194,156);
+
+      .boundary {
+        height: 5px;
+        background-image: url("./images/boundary.png");
+      }
+
+      .division {
+        height: 1px;
+        background-image: url("./images/division.png");
+      }
+
+      .track {
+        height: 48px;
+      }
+    }
+
+    .rocket {
+      position: absolute;
+      left: 0;
+      height: 48px;
+      width:  32px;
+      background: url("./images/rocket/1834.png") no-repeat center;
+    }
+
+    .rock {
+      position: absolute;
+      left: 0;
+      height: 48px;
+      width:  32px;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: rotate 2s linear infinite;
+
+      &.size1 {
+        background-image: url("./images/rock/2280.png");
+      }
+
+      &.size2 {
+        background-image: url("./images/rock/2281.png");
+      }
+
+      &.size3 {
+        background-image: url("./images/rock/2282.png");
+      }
+
+      &.size4 {
+        background-image: url("./images/rock/2283.png");
+      }
+
+      &.size5 {
+        background-image: url("./images/rock/2284.png");
+      }
+
+      &.disappear {
+        opacity: 0;
+        transition: opacity 200ms;
+      }
     }
   }
 
@@ -148,57 +218,84 @@
   }
 
   .control {
-    // flex: 1;
+    flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 64px;
-    padding: 0 32px;
-    background-color: #e9e9e9;
+    // height: 64px;
+    padding: 0 16px;
+
+    & > div {
+      // display: flex;
+      // justify-content: space-between;
+      // align-items: center;
+      width: 100%;
+    }
 
     #items {
-      width: 188px;
-      height: 32px;
-      background-color: gray;
+      display: flex;
+      justify-content: space-between;
+      // height: 32px;
+      // margin: 16px 0;
+      margin-bottom: 24px;
+
+      & > div {
+        width: 48px;
+        height: 48px;
+
+        & > div {
+          width: 32px;
+          height: 32px;
+          margin: 0 auto;
+          border: 1px solid #aaa;
+          border-radius: 2px;
+          background-color: #fff;
+        }
+
+        & > p {
+          margin-top: 4px;
+          text-align: center;
+          line-height: 16px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        &.active > div {
+          background-color: yellow;
+        }
+
+        &.disabled > div {
+          background-color: gray;
+        }
+      }
     }
 
     #dashboard {
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       .board {
-        position: absolute;
-        top: 50%;
-        left: 24px;
-        z-index: 0;
-        box-sizing: content-box;
-        width: 42px;
+        width:  56px;
+        height: 56px;
+        border-radius: 28px;
         color: #fff;
         text-align: center;
-        line-height: 24px;
+        line-height: 56px;
         background-color: green;
 
-        &.left {
-          padding: 0 32px 0 8px;
-          border-top-left-radius: 10px;
-          border-bottom-left-radius: 10px;
-          transform: translate(-100%, -50%);
-        }
-
-        &.right {
-          padding: 0 8px 0 32px;
-          border-top-right-radius: 10px;
-          border-bottom-right-radius: 10px;
-          transform: translate(0, -50%);
+        &.speed {
+          margin: 0 16px;
         }
       }
 
       #hp {
-        position: relative;
-        z-index: 1;
-        width:  48px;
-        height: 48px;
+        width:  56px;
+        height: 56px;
         border: 1px solid gray;
-        border-radius: 24px;
+        border-radius: 28px;
         background-image: linear-gradient(to bottom, green, red);
         overflow: hidden;
 
@@ -206,6 +303,25 @@
           height: 0;
           background-color: #fff;
           transition: height 500ms;
+        }
+      }
+
+      .button {
+        position: absolute;
+        width:  56px;
+        height: 56px;
+        border: 1px solid #aaa;
+        border-radius: 28px;
+        text-align: center;
+        line-height: 54px;
+        background-color: #fff;
+
+        &.up {
+          left: 0
+        }
+
+        &.down {
+          right: 0;
         }
       }
     }
